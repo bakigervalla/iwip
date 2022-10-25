@@ -1,0 +1,17 @@
+{
+  "culture": "es",
+  "texts": {
+    "Menu:Home": "Inicio",
+    "Welcome": "Bienvenido",
+    "Home:Header": "Bienvenido a iWipCloud!",
+    "LongWelcomeMessage": "Por favor, inicie sesión y comience a usar la aplicación.",
+    "Menu:PO": "PO",
+    "Permission:PO": "PO",
+    "Permission:POManagement": "PO Management",
+    "Permission:PO.Create": "Creating new PO",
+    "Permission:PO.Edit": "Editing PO",
+    "Permission:PO.Delete": "Deleting PO",
+    "PO": "Purchase Orders",
+    "NewPO": "New PO"
+  }
+}

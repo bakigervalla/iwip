@@ -1,0 +1,28 @@
+﻿@page "/"
+@using Volo.Abp.MultiTenancy
+@inherits iwipComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+<div class="container">
+    <div class="p-5 text-center">
+        @*        <Badge Color="Color.Success" class="mb-4">
+        <h5 class="m-1"> <i class="fas fa-rocket"></i> Congratulations, <strong>iWipCloud</strong> is successfully running!</h5>
+        </Badge>*@
+
+        <p>
+            <img src="/images/logo/irobot_logo_3.png">
+        </p>
+
+        <h1>@L["Home:Header"]</h1>
+
+        @if (!CurrentUser.IsAuthenticated)
+        {
+            <p class="lead px-lg-5 mx-lg-5">@L["LongWelcomeMessage"]</p>
+
+            <a class="btn btn-primary" href="/authentication/login">
+                <i class="fa fa-sign-in-alt"></i> @L["Login"]
+            </a>
+        }
+    </div>
+
+
+</div>

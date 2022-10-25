@@ -1,0 +1,66 @@
+﻿@page "/pos"
+@attribute [Authorize(POPermissions.PO.Default)]
+@using iwip.PO
+@using iwip.Permissions
+@using Microsoft.AspNetCore.Authorization
+@using Volo.Abp.Application.Dtos
+@using iwip.Localization
+@using Microsoft.Extensions.Localization
+@inherits iwipComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@*@inject IStringLocalizer<iwipResource> L*@
+@inject AbpBlazorMessageLocalizerHelper<iwipResource> LH
+
+<div class="container">
+
+    <DxDataGrid Data="@PurchaseOrders"
+                RowInsertingAsync="@CreateAsync"
+                RowUpdatingAsync="@UpdateAsync"
+                RowRemovingAsync="@DeleteAsync"
+                ShowFilterRow="true"
+                PagerPageSizeSelectorVisible="true"
+                PagerAllDataRowsItemVisible="true"
+                PagerAllowedPageSizes=@(new int[] {5,10,20,40})
+                PagerNavigationMode=PagerNavigationMode.InputBox
+                CssClass="mw-1100">
+        <DxDataGridCommandColumn Width="100px" />
+        <DxDataGridColumn Field="@nameof(PurchaseOrderDto.MANUFACTURER)" />
+        @*        <DxDataGridSpinEditColumn Field="@nameof(PurchaseOrderDto.Price)">
+        <DisplayTemplate>
+        @(((context as PurchaseOrderDto)!.Price).ToString("C2", new CultureInfo("en-US")))
+        </DisplayTemplate>
+        </DxDataGridSpinEditColumn>*@
+        <DxDataGridDateEditColumn Field="@nameof(PurchaseOrderDto.PO_DATE)" DisplayFormat="D" EditorFormat="d" EditorDisplayFormat="D" />
+    </DxDataGrid>
+
+    @*    <Card>
+    <CardHeader>
+    <CardTitle>
+    PURCHASE ORDERS
+    </CardTitle>
+    </CardHeader>
+    <CardBody>
+    <!-- FORM FOR NEW TODO ITEMS -->
+    <form id="NewItemForm" @onsubmit:preventDefault @onsubmit="() => Create()" class="row row-cols-lg-auto g-3 align-items-center">
+    <div class="col-12">
+    @*  <div class="input-group">
+    <input name="NewTodoText" type="text" @bind-value="@NewTodoText" class="form-control" placeholder="enter text..." />
+    </div>
+    </div>
+    <div class="col-12">
+    <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+    </form>
+    <!-- TODO ITEMS LIST -->
+    <ul id="TodoList">
+    @foreach (var item in PurchaseOrders)
+    {
+    <li data-id="@item.Id">
+    <i class="far fa-trash-alt"
+    @onclick="() => Delete(item)"></i> @item.PO_HEADER_ID
+    </li>
+    }
+    </ul>
+    </CardBody>
+    </Card>*@
+</div>
