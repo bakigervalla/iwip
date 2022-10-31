@@ -11,4 +11,10 @@ public static class iwipPermissions
         public const string Edit = Default + ".Edit";
         public const string Delete = Default + ".Delete";
     }
+
+    public static class Import
+    {
+        public const string Default = GroupName + ".Import";
+
+    }
 }

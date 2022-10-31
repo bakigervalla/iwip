@@ -50,6 +50,8 @@
     "Permission:PO.Edit": "Editing PO",
     "Permission:PO.Delete": "Deleting PO",
     "PO": "Purchase Orders",
-    "NewPO": "New PO"
+    "NewPO": "New PO",
+    "Menu:Import": "Import",
+    "Menu:Import.ImportData": "Import Data"
   }
 }

@@ -16,4 +16,16 @@ namespace iwip.PO
             public const string Delete = Default + ".Delete";
         }
     }
+
+    public static class ImportPermissions
+    {
+        public const string GroupName = "Import";
+
+        public static class Import
+        {
+            public const string Default = GroupName + ".Import";
+            public const string Create = Default + ".Import";
+        }
+    }
+
 }

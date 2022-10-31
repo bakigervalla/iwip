@@ -28,7 +28,6 @@ public class iwipMongoDbContext : AbpMongoDbContext
         //    map.AutoMap();
         //    map.MapProperty(x => x.Id).SetSerializer(new GuidSerializer(BsonType.String));
         //});
-
         modelBuilder.Entity<PurchaseOrder>(b =>
         {
             b.CollectionName = "TodoItems";

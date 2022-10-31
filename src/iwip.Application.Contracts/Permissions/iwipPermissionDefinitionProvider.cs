@@ -16,6 +16,10 @@ public class iwipPermissionDefinitionProvider : PermissionDefinitionProvider
         poPermission.AddChild(POPermissions.PO.Create, L("Permission:PO.Create"));
         poPermission.AddChild(POPermissions.PO.Edit, L("Permission:PO.Edit"));
         poPermission.AddChild(POPermissions.PO.Delete, L("Permission:PO.Delete"));
+
+        // import
+        var importGroup = context.AddGroup(ImportPermissions.GroupName, L("Permission:Import"));
+        importGroup.AddPermission(ImportPermissions.Import.Default, L("Permission:Import"));
     }
 
     private static LocalizableString L(string name)

@@ -6,15 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp.Domain.Entities.Events.Distributed;
+using Volo.Abp.MultiTenancy;
 
 namespace iwip.PO
 {
-    public class PurchaseOrder : AuditedAggregateRoot<Guid>
+    public class PurchaseOrder : AuditedAggregateRoot<Guid>, IMultiTenant
     {
         public PurchaseOrder()
         {
             this.CREATION_DATE = DateTime.Now;
         }
+
+        public Guid? TenantId { get; set; }
 
         public override Guid Id { get; protected set; }
         public int MANUFACTURER { get; set; }

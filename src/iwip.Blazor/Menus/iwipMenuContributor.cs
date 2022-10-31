@@ -57,6 +57,17 @@ public class iwipMenuContributor : IMenuContributor
                 )
         );
 
+        context.Menu.AddItem(new ApplicationMenuItem(
+            "iwip",
+            l["Menu:Import"],
+            icon: "fa fa-book")
+            .AddItem(new ApplicationMenuItem(
+            "iwip.Import",
+            l["Menu:Import.ImportData"],
+            url: "/import").RequirePermissions("Import.Import")
+        )
+);
+
         return Task.CompletedTask;
     }
 
