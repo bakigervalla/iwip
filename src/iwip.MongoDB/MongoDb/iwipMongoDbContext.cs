@@ -10,8 +10,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
@@ -79,19 +81,51 @@ public class iwipMongoDbContext : AbpMongoDbContext
             //}
             //var newjson = jObj.ToString(Newtonsoft.Json.Formatting.Indented);
 
-            var documents = BsonSerializer.Deserialize<IEnumerable<BsonDocument>>(json);
+            var documents = BsonSerializer.Deserialize<List<BsonDocument>>(json);
             var collection = database.GetCollection<BsonDocument>(collectionName);
 
+            int i = 0;
             foreach (var document in documents)
+            {
                 document.Add("_id", new BsonBinaryData(Guid.NewGuid()));
+                foreach (BsonElement el in document.Elements.ToList())
+                {
+                    if (el.Value.IsBsonArray)
+                    {
+                        ParseElementValue(el.Value.AsBsonArray);
+                    }
+                    else
+                    {
+                        var str = DateTime.TryParse(el.Value.ToString(), out DateTime outDate);
+                        if (str)
+                            document.SetElement(i, new BsonElement(el.Name, outDate));
+                    }
+                    i++;
+                }
+                i = 0;
+            }
 
             await collection.InsertManyAsync(documents);
         }
 
-        public static List<T> GetObject<T>(string json)
+        private BsonArray ParseElementValue(BsonArray documents)
         {
-            var obj = JsonConvert.DeserializeObject<List<T>>(json);
-            return obj.ToList();
+            int i = 0;
+            foreach (var document in documents)
+            {
+                foreach (var el in ((BsonDocument)document).Elements.ToList())
+                {
+                    if (el.Value.IsBsonArray)
+                        ParseElementValue(el.Value.AsBsonArray);
+
+                    var str = DateTime.TryParse(el.Value.ToString(), out DateTime outDate);
+                    if (str)
+                        ((BsonDocument)document).SetElement(i, new BsonElement(el.Name, outDate));
+                    i++;
+                }
+                i = 0;
+            }
+            return documents;
         }
 
         // Obsolete: Another method

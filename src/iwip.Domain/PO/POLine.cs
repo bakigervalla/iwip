@@ -19,7 +19,8 @@ namespace iwip.PO
         public string NOTE_TO_VENDOR { get; set; }
         public string SKU { get; set; }
         public int QUANTITY_REMAINING { get; set; }
-        public string EX_FACTORY_DATE { get; set; }
+        
+        public DateTime? EX_FACTORY_DATE { get; set; }
         public string PO_LINE_TYPE { get; set; }
         public int QUANTITY_ORDERED { get; set; }
         public int QUANTITY_DELIVERED { get; set; }
@@ -33,6 +34,7 @@ namespace iwip.PO
         public string ADDRESS_LINE_3 { get; set; }
         public string TOWN_OR_CITY { get; set; }
         public string COUNTRY { get; set; }
+        [BsonIgnore]
         public string POSTAL_CODE { get; set; }
         public string REGION_1 { get; set; }
         public string REGION_2 { get; set; }
@@ -42,15 +44,19 @@ namespace iwip.PO
         public string ATTRIBUTE3 { get; set; }
         public string DERIVED_LOCALE { get; set; }
         public string TIMEZONE_CODE { get; set; }
-        public string NEED_BY_DATE { get; set; }
-        public string PROMISED_DATE { get; set; }
+        
+        public DateTime? NEED_BY_DATE { get; set; }
+        
+        public DateTime? PROMISED_DATE { get; set; }
         public string LINE_CLOSED_CODE { get; set; }
         public int LINE_LOCATION_ID { get; set; }
         public int ITEM_ID { get; set; }
         public int NON_Z_ITEM_ID { get; set; }
+        [BsonIgnore]
         public string BUILD_WEEK { get; set; }
         public string SHIP_TO_SITE_REGION { get; set; }
-        public string LAST_UPDATE_DATE { get; set; }
+        
+        public DateTime? LAST_UPDATE_DATE { get; set; }
 
         [BsonIgnore]
         public string LAST_UPDATED_BY { get; set; }
