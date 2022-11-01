@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\iwip.Domain\iwip.Domain.csproj" />
     <ProjectReference Include="..\iwip.Application.Contracts\iwip.Application.Contracts.csproj" />
+    <ProjectReference Include="..\iwip.MongoDB\iwip.MongoDB.csproj" />
   </ItemGroup>
 
   <ItemGroup>

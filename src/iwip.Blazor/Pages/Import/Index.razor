@@ -13,10 +13,12 @@
 
 <h3>Data Importer</h3>
 
-@if (!string.IsNullOrEmpty(ErrorMessage))
+@if (Alerts.Count > 0)
 {
-    <div class="alert alert-danger" role="alert">
-        @ErrorMessage
+    var type = Alerts.First().Type.ToString();
+    <div class="alert alert-@type" role="alert">
+        @foreach(var alert in Alerts)
+            @alert.Message
     </div>
 }
 
@@ -83,32 +85,10 @@
             </table>
 
             <div class="btn-group w-100" role="group" aria-label="Basic mixed styles example">
-                <button type="button" disabled="@isUploading" class="btn btn-sm btn-success" @onclick="UploadFileQueue">Upload file queue</button>
+                <button type="button" disabled="@isUploading" class="btn btn-sm btn-success" @onclick="ImportData">Import data</button>
                 <button type="button" disabled="@isUploading" class="btn btn-sm btn-info" @onclick="ClearFileQueue">Clear file queue</button>
             </div>
 
         </div>
     </div>
 }
-
-@*
-    <!-- List Files on server in a table -->
-    <div class="card">
-        <div class="card-header">Files On Server</div>
-        <div class="card-body">
-            <div class="list-group">
-                @if (FileUrls.Count == 0)
-                {
-                    <span>No Files have been uploaded</span>
-                }
-                else
-                {
-                    foreach (var url in FileUrls)
-                    {
-                        <a href="@url" target="_blank" class="list-group-item list-group-item-action">@url</a>
-                    }
-                }
-            </div>
-        </div>
-    </div>
-*@

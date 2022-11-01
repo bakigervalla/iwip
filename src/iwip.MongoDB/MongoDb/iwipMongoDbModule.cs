@@ -12,6 +12,7 @@ using Volo.Abp.PermissionManagement.MongoDB;
 using Volo.Abp.SettingManagement.MongoDB;
 using Volo.Abp.TenantManagement.MongoDB;
 using Volo.Abp.Uow;
+using static iwip.MongoDB.iwipMongoDbContext;
 
 namespace iwip.MongoDB;
 
@@ -33,6 +34,7 @@ public class iwipMongoDbModule : AbpModule
         context.Services.AddMongoDbContext<iwipMongoDbContext>(options =>
         {
             options.AddDefaultRepositories();
+            options.AddRepository<BaseEntity, IImportRepository>();
         });
 
         Configure<AbpUnitOfWorkDefaultOptions>(options =>

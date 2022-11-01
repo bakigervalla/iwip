@@ -1,22 +1,13 @@
-﻿using Blazorise;
-using DevExpress.Blazor;
-using DevExpress.Blazor.Internal;
-using iwip.Import;
-using iwip.PO;
+﻿using iwip.Import;
+using iwip.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
-using System.Xml.Linq;
+using Alert = iwip.Models.Alert;
 
 namespace iwip.Blazor.Pages.Import
 {
@@ -25,40 +16,23 @@ namespace iwip.Blazor.Pages.Import
         [Inject] IImportAppService ImportAppService { get; set; }
 
         private bool isUploading = false;
-        private string ErrorMessage = string.Empty;
+        private List<Alert> Alerts { get; set; } = new();
         private string dropClass = string.Empty;
         private int maxAllowedFiles = 3;
         List<string> FileUrls = new List<string>();
         List<FileUploadProgress> filesQueue = new();
+        List<FileChunkDto> Files = new();
 
-        private List<PurchaseOrderDto> PurchaseOrders { get; set; } = new List<PurchaseOrderDto>();
+        public Index() { }
 
-        public Index()
-        {
-
-        }
-
-        //private async Task ImportAsync(FileUploadProgress file, bool isGeneric)
-        //{
-        //    string nameOnly = Path.GetFileNameWithoutExtension(file.FileName);
-        //    var extension = Path.GetExtension(file.FileName);
-        //    string text = System.IO.File.ReadAllText(file.FileName);
-
-        //    var items = JsonConvert.DeserializeObject<ReadOnlyCollection<PurchaseOrderDto>>(text);
-
-        //    await ImportAppService.ImportAsync(items);
-
-        //    //StateHasChanged();
-        //}
-
-        private void AddFilesToQueue(InputFileChangeEventArgs e)
+        private async Task AddFilesToQueue(InputFileChangeEventArgs e)
         {
             dropClass = string.Empty;
-            ErrorMessage = string.Empty;
+            Alerts.Clear();
 
             if (e.FileCount > maxAllowedFiles)
             {
-                ErrorMessage = $"A maximum of {maxAllowedFiles} is allowed, you have selected {e.FileCount} files!";
+                Alerts.Add(new Alert(AlertType.warning, $"A maximum of {maxAllowedFiles} is allowed, you have selected {e.FileCount} files!"));
             }
             else
             {
@@ -72,7 +46,7 @@ namespace iwip.Blazor.Pages.Import
 
                     if (!IsValidFileType(fileInfo))
                     {
-                        ErrorMessage = $"Invalid file type {fileInfo.Extension} in file {fileInfo.Name}. Allowed file types {iWipConstants.AllowedExtensions}";
+                        Alerts.Add(new Alert(AlertType.danger, $"Invalid file type {fileInfo.Extension} in file {fileInfo.Name}. Allowed file types {iWipConstants.AllowedExtensions}"));
                         return;
                     }
                     var progress = new FileUploadProgress(file, file.Name, file.Size, fileCount);
@@ -80,6 +54,9 @@ namespace iwip.Blazor.Pages.Import
                     fileCount++;
                 }
             }
+
+            await UploadFileQueue();
+
         } //PlaceFilesInQue
 
         private bool IsValidFileType(FileInfo fileInfo)
@@ -97,11 +74,11 @@ namespace iwip.Blazor.Pages.Import
             {
                 if (!file.HasBeenUploaded)
                 {
-                    //* await ImportAsync(file, true);
                     await UploadChunks(file);
                     file.HasBeenUploaded = true;
                 }
             }
+
 
             isUploading = false;
         } //UploadFileQueue
@@ -116,7 +93,8 @@ namespace iwip.Blazor.Pages.Import
 
             string nameOnly = Path.GetFileNameWithoutExtension(file.FileName);
             var extension = Path.GetExtension(file.FileName);
-            string newFileNameWithoutPath = $"{DateTime.Now.Ticks}-{nameOnly}{extension}";
+            // string newFileNameWithoutPath = $"{DateTime.Now.Ticks}-{nameOnly}{extension}";
+            string newFileNameWithoutPath = $"{nameOnly}{extension}";
 
             bool firstChunk = true;
             using (var inStream = file.FileData.OpenReadStream(long.MaxValue))
@@ -126,25 +104,20 @@ namespace iwip.Blazor.Pages.Import
                     var buffer = new byte[chunkSize];
                     await inStream.ReadAsync(buffer, 0, buffer.Length);
 
-                    var chunk = new FileChunkDto
+                    Files.Add(new FileChunkDto
                     {
                         Data = buffer,
                         FileName = newFileNameWithoutPath,
                         Offset = filesQueue[file.FileId].UploadedBytes,
                         FirstChunk = firstChunk
-                    };
+                    });
 
                     firstChunk = false;
 
                     // Update our progress data and UI
                     filesQueue[file.FileId].UploadedBytes += chunkSize;
-                    await InvokeAsync(StateHasChanged).ContinueWith(async task =>
-                    {
-                        // await ImportAppService.UploadFileChunk(chunk);
-                        string text = System.Text.Encoding.Default.GetString(buffer); //System.IO.File.ReadAllText(filesQueue[file.FileId].FileName);
-                        var items = JsonConvert.DeserializeObject<ReadOnlyCollection<PurchaseOrderDto>>(text);
-                        await ImportAppService.ImportAsync(items);
-                    });
+
+                    await InvokeAsync(StateHasChanged);
                 }
 
                 if (remainder > 0)
@@ -152,24 +125,18 @@ namespace iwip.Blazor.Pages.Import
                     var buffer = new byte[remainder];
                     await inStream.ReadAsync(buffer, 0, buffer.Length);
 
-                    var chunk = new FileChunkDto
+                    Files.Add(new FileChunkDto
                     {
                         Data = buffer,
                         FileName = newFileNameWithoutPath,
                         Offset = filesQueue[file.FileId].UploadedBytes,
                         FirstChunk = firstChunk
-                    };
+                    });
 
                     // Update our progress data and UI
                     filesQueue[file.FileId].UploadedBytes += remainder;
                     //await ListFiles();
-                    await InvokeAsync(StateHasChanged).ContinueWith(async task =>
-                    {
-                        // await ImportAppService.UploadFileChunk(chunk);
-                        string text = System.Text.Encoding.Default.GetString(buffer); //System.IO.File.ReadAllText(filesQueue[file.FileId].FileName);
-                        var items = JsonConvert.DeserializeObject<ReadOnlyCollection<PurchaseOrderDto>>(text);
-                        await ImportAppService.ImportAsync(items);
-                    });
+                    await InvokeAsync(StateHasChanged);
                 }
             }
         } //UploadChunks
@@ -196,6 +163,8 @@ namespace iwip.Blazor.Pages.Import
             public long UploadedBytes { get; set; }
             public double UploadedPercentage => (double)UploadedBytes / (double)Size * 100d;
             public bool HasBeenUploaded { get; set; } = false;
+            public byte[] FileContent { get; set; }
+
         } //FileUploadProgress
 
 
@@ -208,20 +177,26 @@ namespace iwip.Blazor.Pages.Import
             dropClass = string.Empty;
         } //HandleDragLeave
 
-
-        /*
-        protected override async Task OnInitializedAsync()
+        private async Task ImportData()
         {
-            await ListFiles();
-        }
-        private async Task ListFiles()
-        {
-            FileUrls = await ImportAppService.GetFileNames();
-            await InvokeAsync(StateHasChanged);
-        }
-        */
+            // get files
+            try
+            {
+                foreach (var file in Files.GroupBy(x => x.FileName))
+                {
+                    var buffer = file.SelectMany(x => x.Data).ToArray();
 
+                    string snam = Path.GetFileNameWithoutExtension(file.First().FileName);
+                    await ImportAppService.ImportAsync(snam, buffer);
 
+                    Alerts.Add(new Alert(AlertType.success, "Import completed sucessfully."));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Alerts.Add(new Alert(AlertType.danger, ex.Message));
+            }
+        }
     }
-
 }

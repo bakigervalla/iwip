@@ -57,9 +57,18 @@ namespace iwip.PO
 
         public async Task<List<PurchaseOrderDto>> GetListAsync()
         {
-            var items = await _poRepository.GetListAsync();
+            try
+            {
+                var items = await _poRepository.GetListAsync();
 
-            return ObjectMapper.Map<List<PurchaseOrder>, List<PurchaseOrderDto>>(items);
+                return ObjectMapper.Map<List<PurchaseOrder>, List<PurchaseOrderDto>>(items);
+            }
+            catch(Exception ex)
+            {
+                string sera = ex.Message;
+                return null;
+            }
+            
             //return items
             //    .Select(item => new PurchaseOrderDto
             //    {

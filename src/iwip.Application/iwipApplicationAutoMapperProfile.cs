@@ -8,5 +8,7 @@ public class iwipApplicationAutoMapperProfile : Profile
     public iwipApplicationAutoMapperProfile()
     {
         CreateMap<PurchaseOrder, PurchaseOrderDto>();
+        CreateMap<POLine, POLineDto>();
+        CreateMap<ShippingDocumentDto, ShippingDocumentDto>();
     }
 }
