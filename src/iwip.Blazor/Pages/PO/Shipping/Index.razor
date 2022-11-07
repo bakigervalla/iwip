@@ -1,31 +1,105 @@
 ﻿@page "/pos/{Id}/shipping"
 
 <div class="content">
-    <EditForm Model="PO.SHIPPING[0]" OnSubmit="Save" class="card card-body bg-light mt-5">
+    <EditForm Model="PO.SHIPPING" OnSubmit="Save" class="card card-body bg-light mt-5">
         <div class="form-group row">
             <label for="SHIP_TO_LOCATION" class="col-md-2 col-form-label">Location:</label>
             <div class="col-md-10">
-                <InputText id="SHIP_TO_LOCATION" class="form-control" @bind-Value="PO.SHIPPING[0].SHIP_TO_LOCATION" />
+                <InputText id="SHIP_TO_LOCATION" class="form-control" @bind-Value="PO.SHIPPING.SHIP_TO_LOCATION" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="SHIP_TO_SITE_DESCRIPTION" class="col-md-2 col-form-label">Address 1:</label>
+            <div class="col-md-10">
+                <InputText id="SHIP_TO_SITE_DESCRIPTION" class="form-control" @bind-Value="PO.SHIPPING.SHIP_TO_SITE_DESCRIPTION" />
             </div>
         </div>
         <div class="form-group row">
             <label for="ADDRESS_LINE_1" class="col-md-2 col-form-label">Address 1:</label>
             <div class="col-md-10">
-                <InputText id="ADDRESS_LINE_1" class="form-control" @bind-Value="PO.SHIPPING[0].ADDRESS_LINE_1" />
+                <InputText id="ADDRESS_LINE_1" class="form-control" @bind-Value="PO.SHIPPING.ADDRESS_LINE_1" />
             </div>
         </div>
         <div class="form-group row">
-            <label for="COUNTRY" class="col-md-2 col-form-label">Country:</label>
+            <label for="ADDRESS_LINE_2" class="col-md-2 col-form-label">Address 1:</label>
             <div class="col-md-10">
-                <InputNumber id="COUNTRY" class="form-control" @bind-Value="PO.SHIPPING[0].COUNTRY" />
+                <InputText id="ADDRESS_LINE_2" class="form-control" @bind-Value="PO.SHIPPING.ADDRESS_LINE_2" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="ADDRESS_LINE_3" class="col-md-2 col-form-label">Address 1:</label>
+            <div class="col-md-10">
+                <InputText id="ADDRESS_LINE_3" class="form-control" @bind-Value="PO.SHIPPING.ADDRESS_LINE_3" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="TOWN_OR_CITY" class="col-md-2 col-form-label">Address 1:</label>
+            <div class="col-md-10">
+                <InputText id="TOWN_OR_CITY" class="form-control" @bind-Value="PO.SHIPPING.TOWN_OR_CITY" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="COUNTRY" class="col-md-2 col-form-label">Address 1:</label>
+            <div class="col-md-10">
+                <InputText id="COUNTRY" class="form-control" @bind-Value="PO.SHIPPING.COUNTRY" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="POSTAL_CODE" class="col-md-2 col-form-label">Country:</label>
+            <div class="col-md-10">
+                <InputNumber id="POSTAL_CODE" class="form-control" @bind-Value="PO.SHIPPING.POSTAL_CODE" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="REGION_1" class="col-md-2 col-form-label">Country:</label>
+            <div class="col-md-10">
+                <InputNumber id="REGION_1" class="form-control" @bind-Value="PO.SHIPPING.REGION_1" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="REGION_2" class="col-md-2 col-form-label">Country:</label>
+            <div class="col-md-10">
+                <InputNumber id="REGION_2" class="form-control" @bind-Value="PO.SHIPPING.REGION_2" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="TELEPHONE_NUMBER_1" class="col-md-2 col-form-label">Country:</label>
+            <div class="col-md-10">
+                <InputNumber id="TELEPHONE_NUMBER_1" class="form-control" @bind-Value="PO.SHIPPING.TELEPHONE_NUMBER_1" />
+            </div>
+        </div>
+
+         <div class="form-group row">
+            <label for="REGION_1" class="col-md-2 col-form-label">Country:</label>
+            <div class="col-md-10">
+                <InputNumber id="REGION_1" class="form-control" @bind-Value="PO.SHIPPING.REGION_1" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="REGION_2" class="col-md-2 col-form-label">Country:</label>
+            <div class="col-md-10">
+                <InputNumber id="REGION_2" class="form-control" @bind-Value="PO.SHIPPING.REGION_2" />
+            </div>
+        </div>
+         <div class="form-group row">
+            <label for="DERIVED_LOCALE" class="col-md-2 col-form-label">Country:</label>
+            <div class="col-md-10">
+                <InputNumber id="DERIVED_LOCALE" class="form-control" @bind-Value="PO.SHIPPING.DERIVED_LOCALE" />
             </div>
         </div>
         <div class="form-group row">
             <label for="NEED_BY_DATE" class="col-md-2 col-form-label">Need by Date:</label>
             <div class="col-md-10">
-                <DatePicker id="NEED_BY_DATE" class="form-control" @bind-Date="PO.SHIPPING[0].NEED_BY_DATE" />
+                <DatePicker id="NEED_BY_DATE" class="form-control" @bind-Date="PO.SHIPPING.NEED_BY_DATE" />
             </div>
         </div>
+        <div class="form-group row">
+            <label for="PROMISED_DATE" class="col-md-2 col-form-label">Need by Date:</label>
+            <div class="col-md-10">
+                <DatePicker id="PROMISED_DATE" class="form-control" @bind-Date="PO.SHIPPING.PROMISED_DATE" />
+            </div>
+        </div>
+        
         <div class="row">
             <div class="col-md-12 text-right">
                 <button type="submit" class="btn btn-success">Save</button>

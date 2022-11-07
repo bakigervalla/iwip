@@ -62,7 +62,7 @@ namespace iwip.PO
         public string POSTAL_CODE { get; set; }
 
         // Collections
-        public List<Shipping> SHIPPING { get; set; }
+        public Shipping SHIPPING { get; set; }
         public List<POLine> PO_LINES { get; set; }
 
     }

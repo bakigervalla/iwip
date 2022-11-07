@@ -47,5 +47,11 @@ namespace iwip.Blazor.Pages.PO.Shipping
             await POAppService.UpdateAsync(updatedPO);
         }
 
+        private async Task Create()
+        {
+            var updatedPO = Mapper.Map<PurchaseOrderDto, CreateUpdatePODto>(PO);
+            await POAppService.CreateAsync(updatedPO);
+        }
+
     }
 }
