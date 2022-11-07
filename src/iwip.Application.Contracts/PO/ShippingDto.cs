@@ -37,5 +37,7 @@ namespace iwip.PO
         public string LAST_UPDATE_DATE { get; set; }
         public string LAST_UPDATED_BY { get; set; }
         public string PO_ORDER_TYPE { get; set; }
+
+        public List<ShippingDocumentDto> SHIPPING_DOCUMENTS { get; set; }
     }
 }

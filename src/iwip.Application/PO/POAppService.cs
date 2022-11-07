@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
@@ -9,6 +10,7 @@ using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 using static System.Net.Mime.MediaTypeNames;
+using System.Linq.Expressions;
 
 namespace iwip.PO
 {
@@ -63,12 +65,12 @@ namespace iwip.PO
 
                 return ObjectMapper.Map<List<PurchaseOrder>, List<PurchaseOrderDto>>(items);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 string sera = ex.Message;
                 return null;
             }
-            
+
             //return items
             //    .Select(item => new PurchaseOrderDto
             //    {
@@ -76,5 +78,28 @@ namespace iwip.PO
             //        POSTAL_CODE = item.POSTAL_CODE
             //    }).ToList();
         }
+
+        public async Task<PurchaseOrderDto> GetPOAsync(Guid id)
+        {
+            try
+            {
+                var po = await _poRepository.GetAsync(id);
+
+                return ObjectMapper.Map<PurchaseOrder, PurchaseOrderDto>(po);
+            }
+            catch (Exception ex)
+            {
+                string sera = ex.Message;
+                return null;
+            }
+
+            //return items
+            //    .Select(item => new PurchaseOrderDto
+            //    {
+            //        Id = item.Id,
+            //        POSTAL_CODE = item.POSTAL_CODE
+            //    }).ToList();
+        }
+
     }
 }

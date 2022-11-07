@@ -18,6 +18,7 @@ namespace iwip.PO
         public PurchaseOrder()
         {
             this.CREATION_DATE = DateTime.Now;
+            SHIPPING = new List<Shipping>();
         }
 
         public Guid? TenantId { get; set; }
@@ -46,8 +47,11 @@ namespace iwip.PO
         public string ENABLED_FLAG { get; set; }
         public string FREIGHT_TERMS_LOOKUP_CODE { get; set; }
         public string AUTHORIZATION_STATUS { get; set; }  // AuthorizationStatus
+
         public string APPROVED_FLAG { get; set; }
-        
+        [BsonIgnore]
+        public bool APPROVED { get => APPROVED_FLAG?.ToLower() == "y"; }
+
         public DateTime? APPROVED_DATE { get; set; }
         public string CANCEL_FLAG { get; set; }
         public string CLOSED_CODE { get; set; }   // ClosedCode 
@@ -58,7 +62,8 @@ namespace iwip.PO
         public string POSTAL_CODE { get; set; }
 
         // Collections
-        public ICollection<POLine> PO_LINES { get; set; }
+        public List<Shipping> SHIPPING { get; set; }
+        public List<POLine> PO_LINES { get; set; }
 
     }
 }

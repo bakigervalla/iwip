@@ -1,5 +1,6 @@
 ﻿using iwip.PO;
 using Microsoft.AspNetCore.Components;
+using Syncfusion.Blazor.Grids;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,10 +12,20 @@ namespace iwip.Blazor.Pages.PO
         [Inject]
         private IPOAppService POAppService { get; set; }
 
+        private bool loading { get; set; }
+
         private List<PurchaseOrderDto> PurchaseOrders { get; set; } = new List<PurchaseOrderDto>();
-        private int TotalCount { get; set; }
         private CreateUpdatePODto NewPO { get; set; } = new CreateUpdatePODto();
         private CreateUpdatePODto EditingPODto { get; set; } = new CreateUpdatePODto();
+
+
+        public string SelectedOrder{ get; set; }
+        public int? RowIndex { get; set; } = 1003;
+        public void RowSelecthandler(RowSelectEventArgs<PurchaseOrderDto> Args)
+        {
+            SelectedOrder = Args.Data.VENDOR_NAME;
+            RowIndex = Args.Data.PO_HEADER_ID;
+        }
 
         public Index()
         {
@@ -29,8 +40,11 @@ namespace iwip.Blazor.Pages.PO
 
         private async Task GetPOsAsync()
         {
+            loading = true;
+
             PurchaseOrders = await POAppService.GetListAsync();
 
+            loading = false;
             StateHasChanged();
         }
 
@@ -70,5 +84,6 @@ namespace iwip.Blazor.Pages.PO
             await Notify.Info("Deleted the PO item.");
             PurchaseOrders.Remove(item);
         }
+
     }
 }

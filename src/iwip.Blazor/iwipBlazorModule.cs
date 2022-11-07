@@ -17,6 +17,7 @@ using Volo.Abp.UI.Navigation;
 using Volo.Abp.Identity.Blazor.WebAssembly;
 using Volo.Abp.SettingManagement.Blazor.WebAssembly;
 using Volo.Abp.TenantManagement.Blazor.WebAssembly;
+using Syncfusion.Blazor;
 
 namespace iwip.Blazor;
 
@@ -43,7 +44,9 @@ public class iwipBlazorModule : AbpModule
         ConfigureMenu(context);
         ConfigureAutoMapper(context);
 
-        builder.Services.AddDevExpressBlazor();
+        Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NzU1NzY4QDMxMzkyZTMyMmUzME9JVTZURmloYW1GRWJkNjJJUU40UHZVV0M3bU8xTkhucUg0b0NEOEUzNm89");
+
+        builder.Services.AddSyncfusionBlazor();
     }
 
     private void ConfigureRouter(ServiceConfigurationContext context)

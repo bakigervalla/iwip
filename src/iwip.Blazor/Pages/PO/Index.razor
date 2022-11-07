@@ -1,5 +1,6 @@
 ﻿@page "/pos"
 @attribute [Authorize(ImportPermissions.Import.Default)]
+@using Syncfusion.Blazor.Navigations
 @using iwip.PO
 @using iwip.Permissions
 @using Microsoft.AspNetCore.Authorization
@@ -10,57 +11,121 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @*@inject IStringLocalizer<iwipResource> L*@
 @inject AbpBlazorMessageLocalizerHelper<iwipResource> LH
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Data
+@inject NavigationManager NavigationManager
 
 <div class="container">
 
-    <DxDataGrid Data="@PurchaseOrders"
-                RowInsertingAsync="@CreateAsync"
-                RowUpdatingAsync="@UpdateAsync"
-                RowRemovingAsync="@DeleteAsync"
-                ShowFilterRow="true"
-                PagerPageSizeSelectorVisible="true"
-                PagerAllDataRowsItemVisible="true"
-                PagerAllowedPageSizes=@(new int[] {5,10,20,40})
-                PagerNavigationMode=PagerNavigationMode.InputBox
-                CssClass="mw-1100">
-        <DxDataGridCommandColumn Width="100px" />
-        <DxDataGridColumn Field="@nameof(PurchaseOrderDto.MANUFACTURER)" />
-        @*        <DxDataGridSpinEditColumn Field="@nameof(PurchaseOrderDto.Price)">
-        <DisplayTemplate>
-        @(((context as PurchaseOrderDto)!.Price).ToString("C2", new CultureInfo("en-US")))
-        </DisplayTemplate>
-        </DxDataGridSpinEditColumn>*@
-        <DxDataGridDateEditColumn Field="@nameof(PurchaseOrderDto.PO_DATE)" DisplayFormat="D" EditorFormat="d" EditorDisplayFormat="D" />
-    </DxDataGrid>
+    <SfSpinner Visible="@loading" Type="@SpinnerType.Bootstrap4" Size="100" Label="Data loading">
+    </SfSpinner>
 
-    @*    <Card>
-    <CardHeader>
-    <CardTitle>
-    PURCHASE ORDERS
-    </CardTitle>
-    </CardHeader>
-    <CardBody>
-    <!-- FORM FOR NEW TODO ITEMS -->
-    <form id="NewItemForm" @onsubmit:preventDefault @onsubmit="() => Create()" class="row row-cols-lg-auto g-3 align-items-center">
-    <div class="col-12">
-    @*  <div class="input-group">
-    <input name="NewTodoText" type="text" @bind-value="@NewTodoText" class="form-control" placeholder="enter text..." />
-    </div>
-    </div>
-    <div class="col-12">
-    <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-    </form>
-    <!-- TODO ITEMS LIST -->
-    <ul id="TodoList">
-    @foreach (var item in PurchaseOrders)
-    {
-    <li data-id="@item.Id">
-    <i class="far fa-trash-alt"
-    @onclick="() => Delete(item)"></i> @item.PO_HEADER_ID
-    </li>
+    <SfGrid Width="1200px" @ref="DefaultGrid" DataSource="@PurchaseOrders" AllowGrouping="true" AllowPaging="true" AllowFiltering="true" AllowSorting="true" Height=" 500">
+        <GridEvents OnLoad="Load" TValue="PurchaseOrderDto"></GridEvents>
+        <GridPageSettings PageCount="2"></GridPageSettings>
+        <GridEvents CommandClicked="OnCommandClicked" TValue="PurchaseOrderDto"></GridEvents>
+        <GridTemplates>
+            <DetailTemplate>
+                @{
+                    PurchaseOrderDto PO = context as PurchaseOrderDto;
+                }
+                <SfTab Height="350" HeaderPlacement="HeaderPosition.Top">
+                    <TabItems>
+                        <TabItem>
+                            <ChildContent>
+                                <TabHeader Text="Order Details"></TabHeader>
+                            </ChildContent>
+                            <ContentTemplate>
+                                <div class="inner-padding">
+                                    <SfGrid Width="840px" TValue="POLineDto" DataSource="@PO.PO_LINES" AllowPaging="false">
+                                        @*Query="@(new Query().Where("PO_HEADER_ID", "equal", PO.PO_HEADER_ID))"*@
+                                        <GridPageSettings PageSize="20"></GridPageSettings>
+                                        @*                                        <SfDataManager Url="https://js.syncfusion.com/demos/ejservices/Wcf/Northwind.svc/Orders" CrossDomain="true"></SfDataManager>*@
+                                        <GridColumns>
+                                            <GridColumn Field=@nameof(POLineDto.PO_LINE_ID) HeaderText="Line ID" Width="80"> </GridColumn>
+                                            <GridColumn Field=@nameof(POLineDto.ITEM_DESCRIPTION) HeaderText="Description" Width="160"></GridColumn>
+                                            <GridColumn Field=@nameof(POLineDto.SKU) HeaderText="SKU" Width="90"></GridColumn>
+                                            <GridColumn Field=@nameof(POLineDto.PO_LINE_TYPE) HeaderText="Type" Width="70"></GridColumn>
+                                            <GridColumn Field=@nameof(POLineDto.QUANTITY_ORDERED) HeaderText="Quanity" Format="N2" TextAlign="TextAlign.Right" Width="70"></GridColumn>
+                                            <GridColumn Field=@nameof(POLineDto.NEED_BY_DATE) HeaderText="Need By Date" Width="110" TextAlign="TextAlign.Center"
+                                                        Type="ColumnType.Date"
+                                                        Format="d">
+                                            </GridColumn>
+                                        </GridColumns>
+                                    </SfGrid>
+                                </div>
+                            </ContentTemplate>
+                        </TabItem>
+                    </TabItems>
+                </SfTab>
+            </DetailTemplate>
+        </GridTemplates>
+        <GridColumns>
+            <GridColumn HeaderText="View Shipping" TextAlign="TextAlign.Center" Width="90">
+                <GridCommandColumns>
+                    <GridCommandColumn ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-open-link", CssClass = "e-flat" })" Title="View"></GridCommandColumn>
+                </GridCommandColumns>
+            </GridColumn>
+
+            <SfDataManager Url="/shipping" CrossDomain="true"></SfDataManager>
+            <GridColumn Field=@nameof(PurchaseOrderDto.PO_HEADER_ID) HeaderText="ID" Width="80"></GridColumn>
+            <GridColumn Field=@nameof(PurchaseOrderDto.PURCHASE_ORDER_NUMBER) HeaderText="Order No" Width="80"></GridColumn>
+            <GridColumn Field=@nameof(PurchaseOrderDto.VENDOR_NAME) HeaderText="Vendor" Width="160"></GridColumn>
+            <GridColumn Field=@nameof(PurchaseOrderDto.FREIGHT_TERMS_LOOKUP_CODE) HeaderText="Lookup Code" Width="100"></GridColumn>
+            <GridColumn Field=@nameof(PurchaseOrderDto.AUTHORIZATION_STATUS) HeaderText="Auth Status" Width="90">
+                <Template>
+                    @{
+                        var po = (context as PurchaseOrderDto);
+                        if (po.AUTHORIZATION_STATUS == "APPROVED")
+                        {
+                            <div class="statustord e-activecolor">
+                                <span class="statustxt e-activecolor">@po.AUTHORIZATION_STATUS</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="statustord e-inactivecolor">
+                                <span class="statustxt e-inactivecolor">@po.AUTHORIZATION_STATUS</span>
+                            </div>
+                        }
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field=@nameof(PurchaseOrderDto.CREATION_DATE) HeaderText="Create Date" Width="90" TextAlign="TextAlign.Center"
+                        Type="ColumnType.Date"
+                        Format="MM/dd/yyyy">
+            </GridColumn>
+            <GridColumn Field=@nameof(PurchaseOrderDto.APPROVED_DATE) HeaderText="Approve Date" Width="90" TextAlign="TextAlign.Center"
+                        Type="ColumnType.Date"
+                        Format="MM/dd/yyyy">
+            </GridColumn>
+            <GridColumn Field=@nameof(PurchaseOrderDto.APPROVED) HeaderText="Approved" AllowFiltering="false" TextAlign="TextAlign.Center" DisplayAsCheckBox="true" Width="70"></GridColumn>
+        </GridColumns>
+    </SfGrid>
+
+    @code {
+        private SfGrid<PurchaseOrderDto> DefaultGrid;
+        public int GridHeight;
+
+        public void Load(object args)
+        {
+            var RowHeight = 37; //height of the each row
+            Int32.TryParse(this.DefaultGrid.Height, out GridHeight); //datagrid height
+            var PageSize = (this.DefaultGrid.PageSettings as GridPageSettings).PageSize; //initial page size
+            decimal PageResize = ((GridHeight) - (PageSize * RowHeight)) / RowHeight; //new page size is obtained here
+#pragma warning disable BL0005
+            (this.DefaultGrid.PageSettings as GridPageSettings).PageSize = PageSize + (int)Math.Round(PageResize);
+#pragma warning restore BL0005
+        }
+
+        public PurchaseOrderDto SelectedPO { get; set; }
+
+        public void OnCommandClicked(CommandClickEventArgs<PurchaseOrderDto> args)
+        {
+            SelectedPO = args.RowData;
+            NavigationManager.NavigateTo($"/pos/{SelectedPO.Id}/shipping");
+        }
+
     }
-    </ul>
-    </CardBody>
-    </Card>*@
+
 </div>

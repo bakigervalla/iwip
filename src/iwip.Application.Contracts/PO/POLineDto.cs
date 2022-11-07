@@ -55,8 +55,5 @@ namespace iwip.PO
         [JsonIgnore]
         public string LAST_UPDATED_BY { get; set; }
         public string PO_ORDER_TYPE { get; set; }
-
-        // Collections
-        public ICollection<ShippingDocumentDto> SHIPPING_DOCUMENTS { get; set; }
     }
 }

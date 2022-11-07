@@ -1,0 +1,35 @@
+﻿@page "/pos/{Id}/shipping"
+
+<div class="content">
+    <EditForm Model="PO.SHIPPING[0]" OnSubmit="Save" class="card card-body bg-light mt-5">
+        <div class="form-group row">
+            <label for="SHIP_TO_LOCATION" class="col-md-2 col-form-label">Location:</label>
+            <div class="col-md-10">
+                <InputText id="SHIP_TO_LOCATION" class="form-control" @bind-Value="PO.SHIPPING[0].SHIP_TO_LOCATION" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="ADDRESS_LINE_1" class="col-md-2 col-form-label">Address 1:</label>
+            <div class="col-md-10">
+                <InputText id="ADDRESS_LINE_1" class="form-control" @bind-Value="PO.SHIPPING[0].ADDRESS_LINE_1" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="COUNTRY" class="col-md-2 col-form-label">Country:</label>
+            <div class="col-md-10">
+                <InputNumber id="COUNTRY" class="form-control" @bind-Value="PO.SHIPPING[0].COUNTRY" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="NEED_BY_DATE" class="col-md-2 col-form-label">Need by Date:</label>
+            <div class="col-md-10">
+                <DatePicker id="NEED_BY_DATE" class="form-control" @bind-Date="PO.SHIPPING[0].NEED_BY_DATE" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <button type="submit" class="btn btn-success">Save</button>
+            </div>
+        </div>
+    </EditForm>
+</div>

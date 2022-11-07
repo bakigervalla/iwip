@@ -1,6 +1,28 @@
-﻿namespace iwip.Blazor.Pages.PO
-{
-    public class Index
-    {
-    }
+﻿.e-spinner-pane .e-spinner-inner .e-spin-bootstrap4 {
+    stroke: #0078D6;
+}
+
+.statustord.e-activecolor {
+    background-color: #ccffcc;
+}
+
+.statustord {
+    position: relative;
+    /*        height: 19px;*/
+    border-radius: 5px;
+    text-align: center;
+}
+
+td.e-rowcell .statustxt.e-activecolor {
+    color: #007d00;
+    position: relative;
+}
+
+.statustord.e-inactivecolor {
+    background-color: #ffd7cc;
+}
+
+td.e-rowcell .statustxt.e-inactivecolor {
+    color: #c40000;
+    position: relative;
 }

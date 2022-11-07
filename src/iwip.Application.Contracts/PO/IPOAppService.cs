@@ -13,5 +13,7 @@ namespace iwip.PO
         Task<PurchaseOrderDto> CreateAsync(CreateUpdatePODto createPO);
         Task<PurchaseOrderDto> UpdateAsync(CreateUpdatePODto updatePO);
         Task DeleteAsync(Guid id);
+
+        Task<PurchaseOrderDto> GetPOAsync(Guid id);
     }
 }
