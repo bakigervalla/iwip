@@ -6,6 +6,10 @@ namespace iwip.PO
 {
     public class POLineDto
     {
+        public POLineDto()
+        {
+            SHIPPING = new ShippingDto();
+        }
         public int MANUFACTURER { get; set; }
         public int PO_HEADER_ID { get; set; }
         public int PO_LINE_ID { get; set; }
@@ -40,6 +44,7 @@ namespace iwip.PO
         public string ATTRIBUTE3 { get; set; }
         public string DERIVED_LOCALE { get; set; }
         public string TIMEZONE_CODE { get; set; }
+        /*[JsonIgnore]*/
         public DateTime? NEED_BY_DATE { get; set; }
         public DateTime? PROMISED_DATE { get; set; }
         public string LINE_CLOSED_CODE { get; set; }
@@ -55,5 +60,8 @@ namespace iwip.PO
         [JsonIgnore]
         public string LAST_UPDATED_BY { get; set; }
         public string PO_ORDER_TYPE { get; set; }
+
+        public ShippingDto SHIPPING { get; set; }
+
     }
 }

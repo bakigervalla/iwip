@@ -18,7 +18,6 @@ namespace iwip.PO
         public PurchaseOrder()
         {
             this.CREATION_DATE = DateTime.Now;
-            SHIPPING = new List<Shipping>();
         }
 
         public Guid? TenantId { get; set; }
@@ -62,7 +61,6 @@ namespace iwip.PO
         public string POSTAL_CODE { get; set; }
 
         // Collections
-        public Shipping SHIPPING { get; set; }
         public List<POLine> PO_LINES { get; set; }
 
     }

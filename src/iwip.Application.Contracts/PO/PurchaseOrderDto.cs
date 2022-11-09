@@ -7,11 +7,6 @@ namespace iwip.PO
 {
     public class PurchaseOrderDto
     {
-        public PurchaseOrderDto()
-        {
-            SHIPPING = new ShippingDto();
-        }
-
         public Guid Id { get; set; }
         public int MANUFACTURER { get; set; }
         public int PO_HEADER_ID { get; set; }
@@ -47,8 +42,6 @@ namespace iwip.PO
         public string POSTAL_CODE { get; set; }
 
         // Collections
-
-        public ShippingDto SHIPPING { get; set; }
 
         public List<POLineDto> PO_LINES { get; set; }
     }

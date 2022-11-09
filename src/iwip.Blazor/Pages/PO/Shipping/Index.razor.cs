@@ -16,6 +16,9 @@ namespace iwip.Blazor.Pages.PO.Shipping
         [Parameter]
         public string Id { get; set; }
 
+        [Parameter]
+        public string LineId { get; set; }
+
         [Inject]
         private IPOAppService POAppService { get; set; }
 
@@ -24,7 +27,7 @@ namespace iwip.Blazor.Pages.PO.Shipping
         
         private bool loading { get; set; }
 
-        private PurchaseOrderDto PO { get; set; }
+        private ShippingDto Shipping { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {
@@ -35,7 +38,7 @@ namespace iwip.Blazor.Pages.PO.Shipping
         {
             loading = true;
 
-            PO = await POAppService.GetPOAsync(new Guid(Id));
+            Shipping = await POAppService.GetShippingAsync(new Guid(Id), int.Parse(LineId));
             
             loading = false;
             StateHasChanged();
@@ -43,14 +46,14 @@ namespace iwip.Blazor.Pages.PO.Shipping
 
         private async Task Save()
         {
-            var updatedPO = Mapper.Map<PurchaseOrderDto, CreateUpdatePODto>(PO);
-            await POAppService.UpdateAsync(updatedPO);
+            //var updatedPO = Mapper.Map<PurchaseOrderDto, CreateUpdatePODto>(PO);
+            //await POAppService.UpdateAsync(updatedPO);
         }
 
         private async Task Create()
         {
-            var updatedPO = Mapper.Map<PurchaseOrderDto, CreateUpdatePODto>(PO);
-            await POAppService.CreateAsync(updatedPO);
+            //var updatedPO = Mapper.Map<PurchaseOrderDto, CreateUpdatePODto>(PO);
+            //await POAppService.CreateAsync(updatedPO);
         }
 
     }

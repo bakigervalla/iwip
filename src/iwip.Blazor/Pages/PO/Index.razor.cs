@@ -42,8 +42,14 @@ namespace iwip.Blazor.Pages.PO
         {
             loading = true;
 
-            PurchaseOrders = await POAppService.GetListAsync();
-
+            try
+            {
+                PurchaseOrders = await POAppService.GetListAsync();
+            }
+            catch(Exception ex)
+            {
+                await Notify.Info(ex.Message + Environment.NewLine + ex.InnerException?.Message);
+            }
             loading = false;
             StateHasChanged();
         }

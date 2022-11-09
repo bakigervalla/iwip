@@ -18,6 +18,7 @@ using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Repositories.MongoDB;
+using Volo.Abp.Identity;
 using Volo.Abp.MongoDB;
 
 namespace iwip.MongoDB;
@@ -91,9 +92,9 @@ public class iwipMongoDbContext : AbpMongoDbContext
                 foreach (BsonElement el in document.Elements.ToList())
                 {
                     if (el.Value.IsBsonArray)
-                    {
-                        ParseElementValue(el.Value.AsBsonArray);
-                    }
+                        ParseArrayElement(el.Value.AsBsonArray);
+                    if (el.Value.IsBsonDocument)
+                        ParseDocumentElement(el.Value.AsBsonDocument);
                     else
                     {
                         var str = DateTime.TryParse(el.Value.ToString(), out DateTime outDate);
@@ -108,7 +109,7 @@ public class iwipMongoDbContext : AbpMongoDbContext
             await collection.InsertManyAsync(documents);
         }
 
-        private BsonArray ParseElementValue(BsonArray documents)
+        private BsonArray ParseArrayElement(BsonArray documents)
         {
             int i = 0;
             foreach (var document in documents)
@@ -116,7 +117,9 @@ public class iwipMongoDbContext : AbpMongoDbContext
                 foreach (var el in ((BsonDocument)document).Elements.ToList())
                 {
                     if (el.Value.IsBsonArray)
-                        ParseElementValue(el.Value.AsBsonArray);
+                        ParseArrayElement(el.Value.AsBsonArray);
+                    if (el.Value.IsBsonDocument)
+                        ParseDocumentElement(el.Value.AsBsonDocument);
 
                     var str = DateTime.TryParse(el.Value.ToString(), out DateTime outDate);
                     if (str)
@@ -126,6 +129,22 @@ public class iwipMongoDbContext : AbpMongoDbContext
                 i = 0;
             }
             return documents;
+        }
+
+        private BsonDocument ParseDocumentElement(BsonDocument document)
+        {
+            int i = 0;
+            foreach (var el in document.Elements.ToList())
+            {
+                if (el.Value.IsBsonDocument)
+                    ParseDocumentElement(el.Value.AsBsonDocument);
+
+                var str = DateTime.TryParse(el.Value.ToString(), out DateTime outDate);
+                if (str)
+                    ((BsonDocument)document).SetElement(i, new BsonElement(el.Name, outDate));
+                i++;
+            }
+            return document;
         }
 
         // Obsolete: Another method

@@ -15,5 +15,6 @@ namespace iwip.PO
         Task DeleteAsync(Guid id);
 
         Task<PurchaseOrderDto> GetPOAsync(Guid id);
+        Task<ShippingDto> GetShippingAsync(Guid id, int lineId);
     }
 }

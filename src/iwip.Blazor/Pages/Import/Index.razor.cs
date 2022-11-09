@@ -186,7 +186,7 @@ namespace iwip.Blazor.Pages.Import
                 {
                     var buffer = file.SelectMany(x => x.Data).ToArray();
 
-                    string snam = Path.GetFileNameWithoutExtension(file.First().FileName);
+                    string snam = Path.GetFileNameWithoutExtension(file.Key);
                     await ImportAppService.ImportAsync(snam, buffer);
 
                     Alerts.Add(new Alert(AlertType.success, "Import completed sucessfully."));

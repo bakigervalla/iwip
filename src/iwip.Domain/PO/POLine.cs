@@ -10,6 +10,11 @@ namespace iwip.PO
     [BsonIgnoreExtraElements]
     public class POLine
     {
+        public POLine()
+        {
+            SHIPPING = new Shipping();
+        }
+
         public int MANUFACTURER { get; set; }
         public int PO_HEADER_ID { get; set; }
         public int PO_LINE_ID { get; set; }
@@ -44,7 +49,7 @@ namespace iwip.PO
         public string ATTRIBUTE3 { get; set; }
         public string DERIVED_LOCALE { get; set; }
         public string TIMEZONE_CODE { get; set; }
-        
+        /*[BsonIgnore]*/
         public DateTime? NEED_BY_DATE { get; set; }
         
         public DateTime? PROMISED_DATE { get; set; }
@@ -61,5 +66,7 @@ namespace iwip.PO
         [BsonIgnore]
         public string LAST_UPDATED_BY { get; set; }
         public string PO_ORDER_TYPE { get; set; }
+
+        public Shipping SHIPPING { get; set; }
     }
 }

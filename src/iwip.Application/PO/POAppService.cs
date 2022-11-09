@@ -59,17 +59,8 @@ namespace iwip.PO
 
         public async Task<List<PurchaseOrderDto>> GetListAsync()
         {
-            try
-            {
                 var items = await _poRepository.GetListAsync();
-
                 return ObjectMapper.Map<List<PurchaseOrder>, List<PurchaseOrderDto>>(items);
-            }
-            catch (Exception ex)
-            {
-                string sera = ex.Message;
-                return null;
-            }
 
             //return items
             //    .Select(item => new PurchaseOrderDto
@@ -100,6 +91,26 @@ namespace iwip.PO
             //        POSTAL_CODE = item.POSTAL_CODE
             //    }).ToList();
         }
+
+        public async Task<ShippingDto> GetShippingAsync(Guid id, int lineId)
+        {
+            try
+            {
+                var queryable = await _poRepository.GetQueryableAsync();
+
+                var line = queryable.Where(q => q.Id == id).SelectMany(l => l.PO_LINES);
+
+                var shipping = line?.FirstOrDefault(c => c.PO_LINE_ID == lineId)?.SHIPPING;
+
+                return ObjectMapper.Map<Shipping, ShippingDto>(shipping);
+            }
+            catch (Exception ex)
+            {
+                string sera = ex.Message;
+                return null;
+            }
+        }
+
 
     }
 }

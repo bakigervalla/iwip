@@ -23,7 +23,6 @@
     <SfGrid Width="1200px" @ref="DefaultGrid" DataSource="@PurchaseOrders" AllowGrouping="true" AllowPaging="true" AllowFiltering="true" AllowSorting="true" Height=" 500">
         <GridEvents OnLoad="Load" TValue="PurchaseOrderDto"></GridEvents>
         <GridPageSettings PageCount="2"></GridPageSettings>
-        <GridEvents CommandClicked="OnCommandClicked" TValue="PurchaseOrderDto"></GridEvents>
         <GridTemplates>
             <DetailTemplate>
                 @{
@@ -40,8 +39,14 @@
                                     <SfGrid Width="840px" TValue="POLineDto" DataSource="@PO.PO_LINES" AllowPaging="false">
                                         @*Query="@(new Query().Where("PO_HEADER_ID", "equal", PO.PO_HEADER_ID))"*@
                                         <GridPageSettings PageSize="20"></GridPageSettings>
-                                        @*                                        <SfDataManager Url="https://js.syncfusion.com/demos/ejservices/Wcf/Northwind.svc/Orders" CrossDomain="true"></SfDataManager>*@
+                                        <GridEvents CommandClicked="OnCommandClicked" TValue="POLineDto"></GridEvents>
+                                        @* <SfDataManager Url="https://js.syncfusion.com/demos/ejservices/Wcf/Northwind.svc/Orders" CrossDomain="true"></SfDataManager>*@
                                         <GridColumns>
+                                            <GridColumn HeaderText="View Shipping" TextAlign="TextAlign.Center" Width="90">
+                                                <GridCommandColumns>
+                                                    <GridCommandColumn ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-open-link", CssClass = "e-flat" })" Title="View"></GridCommandColumn>
+                                                </GridCommandColumns>
+                                            </GridColumn>
                                             <GridColumn Field=@nameof(POLineDto.PO_LINE_ID) HeaderText="Line ID" Width="80"> </GridColumn>
                                             <GridColumn Field=@nameof(POLineDto.ITEM_DESCRIPTION) HeaderText="Description" Width="160"></GridColumn>
                                             <GridColumn Field=@nameof(POLineDto.SKU) HeaderText="SKU" Width="90"></GridColumn>
@@ -61,18 +66,13 @@
             </DetailTemplate>
         </GridTemplates>
         <GridColumns>
-            <GridColumn HeaderText="View Shipping" TextAlign="TextAlign.Center" Width="90">
-                <GridCommandColumns>
-                    <GridCommandColumn ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-open-link", CssClass = "e-flat" })" Title="View"></GridCommandColumn>
-                </GridCommandColumns>
-            </GridColumn>
-
             <SfDataManager Url="/shipping" CrossDomain="true"></SfDataManager>
+            <GridEvents DetailDataBound="DetailDataBoundHandler" TValue="PurchaseOrderDto"></GridEvents>
             <GridColumn Field=@nameof(PurchaseOrderDto.PO_HEADER_ID) HeaderText="ID" Width="80"></GridColumn>
             <GridColumn Field=@nameof(PurchaseOrderDto.PURCHASE_ORDER_NUMBER) HeaderText="Order No" Width="80"></GridColumn>
             <GridColumn Field=@nameof(PurchaseOrderDto.VENDOR_NAME) HeaderText="Vendor" Width="160"></GridColumn>
             <GridColumn Field=@nameof(PurchaseOrderDto.FREIGHT_TERMS_LOOKUP_CODE) HeaderText="Lookup Code" Width="100"></GridColumn>
-            <GridColumn Field=@nameof(PurchaseOrderDto.AUTHORIZATION_STATUS) HeaderText="Auth Status" Width="90">
+            <GridColumn Field=@nameof(PurchaseOrderDto.AUTHORIZATION_STATUS) HeaderText="Auth Status" Width="120">
                 <Template>
                     @{
                         var po = (context as PurchaseOrderDto);
@@ -119,11 +119,18 @@
         }
 
         public PurchaseOrderDto SelectedPO { get; set; }
-
-        public void OnCommandClicked(CommandClickEventArgs<PurchaseOrderDto> args)
+        public POLineDto SelectedPOLine { get; set; }
+        
+        public void DetailDataBoundHandler(DetailDataBoundEventArgs<PurchaseOrderDto> args)
         {
-            SelectedPO = args.RowData;
-            NavigationManager.NavigateTo($"/pos/{SelectedPO.Id}/shipping");
+            SelectedPO = args.Data;
+        }
+
+        public void OnCommandClicked(CommandClickEventArgs<POLineDto> args)
+        {
+            SelectedPOLine = args.RowData;
+            Console.WriteLine(args);
+            NavigationManager.NavigateTo($"/pos/{SelectedPO.Id}/shipping/{SelectedPOLine.PO_LINE_ID}");
         }
 
     }

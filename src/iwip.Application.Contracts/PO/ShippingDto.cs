@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -26,13 +27,14 @@ namespace iwip.PO
         public string ATTRIBUTE3 { get; set; }
         public string DERIVED_LOCALE { get; set; }
         public string TIMEZONE_CODE { get; set; }
-        public DateTime NEED_BY_DATE { get; set; }
-        public DateTime PROMISED_DATE { get; set; }
+        
+        public DateTime? NEED_BY_DATE { get; set; }
+        public DateTime? PROMISED_DATE { get; set; }
         public string LINE_CLOSED_CODE { get; set; }
         public int LINE_LOCATION_ID { get; set; }
         public int ITEM_ID { get; set; }
         public int NON_Z_ITEM_ID { get; set; }
-        public DateTime BUILD_WEEK { get; set; }
+        public DateTime? BUILD_WEEK { get; set; }
         public string SHIP_TO_SITE_REGION { get; set; }
         public string LAST_UPDATE_DATE { get; set; }
         public string LAST_UPDATED_BY { get; set; }
