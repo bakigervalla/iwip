@@ -1,4 +1,6 @@
 ﻿@page "/pos/{Id}/shipping/{LineId}"
+@using Syncfusion.Blazor.Buttons
+@using iwip.Blazor.Components
 
 <div class="content">
     @if (Shipping == null)
@@ -8,168 +10,225 @@
     }
     else
     {
-        <EditForm Model="Shipping" OnSubmit="Save" class="row g-3">
-            <div class="col-md-6">
-                <label for="inputEmail4" class="form-label">Email</label>
-                <input type="email" class="form-control" id="inputEmail4">
+        <div class="card p-3 px-4">
+            <div class="pb-3">
+                <Header Title="Shipment Management" Desciription="@string.Format("PO: {0} | Line: {1}", PurchaseOrder.PO_HEADER_ID, LineId )"></Header>
             </div>
-            <div class="col-md-6">
-                <label for="inputPassword4" class="form-label">Password</label>
-                <input type="password" class="form-control" id="inputPassword4">
-            </div>
-            <div class="col-12">
-                <label for="inputAddress" class="form-label">Address</label>
-                <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-            </div>
-            <div class="col-12">
-                <label for="inputAddress2" class="form-label">Address 2</label>
-                <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-            </div>
-            <div class="col-md-6">
-                <label for="inputCity" class="form-label">City</label>
-                <input type="text" class="form-control" id="inputCity">
-            </div>
-            <div class="col-md-4">
-                <label for="inputState" class="form-label">State</label>
-                <select id="inputState" class="form-select">
-                    <option selected>Choose...</option>
-                    <option>...</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label for="inputZip" class="form-label">Zip</label>
-                <input type="text" class="form-control" id="inputZip">
-            </div>
-            <div class="col-12">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="gridCheck">
-                    <label class="form-check-label" for="gridCheck">
-                        Check me out
-                    </label>
+
+            <form>
+                <fieldset class="form-group ">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-2 pt-0">Shipping method 1</legend>
+                        <div class="col-sm-10 ">
+                            @{
+                                foreach (var method in ShippingMethods_1)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="shipping_method1" id="@method" value="@method" checked=@(method == SelectedShippingMethod_1)>
+                                        <label class="form-check-label" for="@method">
+                                            @method
+                                        </label>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group ">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-2 pt-0">Shipping method 2</legend>
+                        <div class="col-sm-10 ">
+                            @{
+                                foreach (var method in ShippingMethods_2)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="shipping_method2" id="@method" value="@method" checked=@(method == SelectedShippingMethod_2)>
+                                        <label class="form-check-label" for="@method">
+                                            @method
+                                        </label>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Location</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="SHIP_TO_LOCATION" value="@Shipping.SHIP_TO_LOCATION">
+                    </div>
                 </div>
-            </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary">Sign in</button>
-            </div>
-
-            @*<div class="form-group row">
-        <label for="SHIP_TO_LOCATION" class="col-md-2 col-form-label">Location:</label>
-        <div class="col-md-10">
-        <InputText id="SHIP_TO_LOCATION" class="form-control" @bind-Value="Shipping.SHIP_TO_LOCATION" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="SHIP_TO_SITE_DESCRIPTION" class="col-md-2 col-form-label">Address 1:</label>
-        <div class="col-md-10">
-        <InputText id="SHIP_TO_SITE_DESCRIPTION" class="form-control" @bind-Value="Shipping.SHIP_TO_SITE_DESCRIPTION" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="SHIP_TO_LOCATION_ID" class="col-md-2 col-form-label">Address 1:</label>
-        <div class="col-md-10">
-        <InputNumber id="SHIP_TO_LOCATION_ID" class="form-control" @bind-Value="Shipping.SHIP_TO_LOCATION_ID" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="ADDRESS_LINE_1" class="col-md-2 col-form-label">Address 1:</label>
-        <div class="col-md-10">
-        <InputText id="ADDRESS_LINE_1" class="form-control" @bind-Value="Shipping.ADDRESS_LINE_1" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="ADDRESS_LINE_2" class="col-md-2 col-form-label">Address 1:</label>
-        <div class="col-md-10">
-        <InputText id="ADDRESS_LINE_2" class="form-control" @bind-Value="Shipping.ADDRESS_LINE_2" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="ADDRESS_LINE_3" class="col-md-2 col-form-label">Address 1:</label>
-        <div class="col-md-10">
-        <InputText id="ADDRESS_LINE_3" class="form-control" @bind-Value="Shipping.ADDRESS_LINE_3" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="TOWN_OR_CITY" class="col-md-2 col-form-label">Address 1:</label>
-        <div class="col-md-10">
-        <InputText id="TOWN_OR_CITY" class="form-control" @bind-Value="Shipping.TOWN_OR_CITY" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="COUNTRY" class="col-md-2 col-form-label">Address 1:</label>
-        <div class="col-md-10">
-        <InputText id="COUNTRY" class="form-control" @bind-Value="Shipping.COUNTRY" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="POSTAL_CODE" class="col-md-2 col-form-label">Country:</label>
-        <div class="col-md-10">
-        <InputText id="POSTAL_CODE" class="form-control" @bind-Value="Shipping.POSTAL_CODE" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="REGION_1" class="col-md-2 col-form-label">Country:</label>
-        <div class="col-md-10">
-        <InputText id="REGION_1" class="form-control" @bind-Value="Shipping.REGION_1" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="REGION_2" class="col-md-2 col-form-label">Country:</label>
-        <div class="col-md-10">
-        <InputText id="REGION_2" class="form-control" @bind-Value="Shipping.REGION_2" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="TELEPHONE_NUMBER_1" class="col-md-2 col-form-label">Country:</label>
-        <div class="col-md-10">
-        <InputText id="TELEPHONE_NUMBER_1" class="form-control" @bind-Value="Shipping.TELEPHONE_NUMBER_1" />
-        </div>
-        </div>
-
-        <div class="form-group row">
-        <label for="REGION_1" class="col-md-2 col-form-label">Country:</label>
-        <div class="col-md-10">
-        <InputText id="REGION_1" class="form-control" @bind-Value="Shipping.REGION_1" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="REGION_2" class="col-md-2 col-form-label">Country:</label>
-        <div class="col-md-10">
-        <InputText id="REGION_2" class="form-control" @bind-Value="Shipping.REGION_2" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="DERIVED_LOCALE" class="col-md-2 col-form-label">Country:</label>
-        <div class="col-md-10">
-        <InputText id="DERIVED_LOCALE" class="form-control" @bind-Value="Shipping.DERIVED_LOCALE" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="NEED_BY_DATE" class="col-md-2 col-form-label">Need by Date:</label>
-        <div class="col-md-10">
-        <DatePicker id="NEED_BY_DATE" class="form-control" @bind-Date="Shipping.NEED_BY_DATE" />
-        </div>
-        </div>
-        <div class="form-group row">
-        <label for="PROMISED_DATE" class="col-md-2 col-form-label">Need by Date:</label>
-        <div class="col-md-10">
-        <DatePicker id="PROMISED_DATE" class="form-control" @bind-Date="Shipping.PROMISED_DATE" />
-        </div>
-        </div>
-
-        <div class="row">
-        <div class="col">
-        <input type="text" class="form-control" placeholder="First name" aria-label="First name">
-        </div>
-        <div class="col">
-        <input type="text" class="form-control" placeholder="Last name" aria-label="Last name">
-        </div>
-        </div>*@
-
-            <div class="row">
-                <div class="col-md-12 text-right">
-                    <button type="submit" class="btn btn-success">Save</button>
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Site Description</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="SHIP_TO_SITE_DESCRIPTION" value="@Shipping.SHIP_TO_SITE_DESCRIPTION">
+                    </div>
                 </div>
-            </div>
-        </EditForm>
+
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Address</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="ADDRESS_LINE_1" rows="6">
+                            @string.Format("{0}\n{1}\n{2}\n{3}\n{4}, {5}\n{6}\n{7}", Shipping.ADDRESS_LINE_1, Shipping.ADDRESS_LINE_2, Shipping.ADDRESS_LINE_3, 
+                            Shipping.TOWN_OR_CITY, Shipping.COUNTRY, Shipping.POSTAL_CODE, Shipping.REGION_1, Shipping.REGION_2)
+                            </textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Phone</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="TELEPHONE_NUMBER_1" value="@Shipping.TELEPHONE_NUMBER_1">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Time Zone</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="TIMEZONE_CODE" value="@Shipping.TIMEZONE_CODE">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Location ID</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="LINE_LOCATION_ID" value="@Shipping.LINE_LOCATION_ID">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Ship to Site Region</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="SHIP_TO_SITE_REGION" value="@Shipping.SHIP_TO_SITE_REGION">
+                    </div>
+                </div>
+                <div class="form-group row ">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Site Description</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="SHIP_TO_SITE_DESCRIPTION" value="@Shipping.SHIP_TO_SITE_DESCRIPTION">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="form-group row col-sm-2">
+                        <label class="col-sm-12 col-form-label">Shipping Dates</label>
+                    </div>
+
+                    <div class="form-group row col-sm-5">
+                        <label for="NEED_BY_DATE" class="col-sm-4 col-form-label text-end">Needed by Date</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="NEED_BY_DATE" value="@Shipping.NEED_BY_DATE?.ToString("d")">
+                        </div>
+                    </div>
+                    <div class="form-group row col-sm-5">
+                        <label for="PROMISED_DATE" class="col-sm-4 col-form-label text-end">Promised Date</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="PROMISED_DATE" value="@Shipping.PROMISED_DATE?.ToString("d")">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">Sign in</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        @*<EditForm Model="Shipping" OnSubmit="Save" class="row g-3">
+    <div class="row">
+    <h1>Shipment Management</h1>
+    <h5>@string.Format("PO #: {0} Line #: {1}", PurchaseOrder.PO_HEADER_ID, LineId )</h5>
+    </div>
+
+    <div class="row">
+    <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6">
+    <div class="col-xs-12 col-sm-12 col-lg-6 col-md-6">
+    <h5>Shipping method 1</h5>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-lg-6 col-md-6">
+    <div style="display: inline-block; padding-right: 10px;">
+    @foreach (var option in ShippingMethods_1)
+    {
+    <InputRadio Value="option" /> @option <br />
+    }
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-6 col-sm-6 col-lg-6 col-md-6">
+    <div class="col-xs-12 col-sm-12 col-lg-6 col-md-6">
+    <h5>Shipping method 2</h5>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-lg-6 col-md-6">
+    <div style="display: inline-block; padding-right: 10px;">
+    @foreach (var method in ShippingMethods_2)
+    {
+    <div style="display: inline-block;">
+    <SfRadioButton Label="@method" Name="shipping_method_2" Value="@method" Checked="@(method == SelectedShippingMethod_1)">
+    </SfRadioButton>
+    </div>
+    }
+    </div>
+    </div>
+    </div>
+    </div>
+
+    <div class="col-md-6">
+    <label for="inputEmail4" class="form-label">Email</label>
+    <input type="email" class="form-control" id="inputEmail4">
+    </div>
+    <div class="col-md-6">
+    <label for="inputPassword4" class="form-label">Password</label>
+    <input type="password" class="form-control" id="inputPassword4">
+    </div>
+    <div class="col-12">
+    <label for="inputAddress" class="form-label">Address</label>
+    <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+    </div>
+    <div class="col-12">
+    <label for="inputAddress2" class="form-label">Address 2</label>
+    <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+    </div>
+    <div class="col-md-6">
+    <label for="inputCity" class="form-label">City</label>
+    <input type="text" class="form-control" id="inputCity">
+    </div>
+    <div class="col-md-4">
+    <label for="inputState" class="form-label">State</label>
+    <select id="inputState" class="form-select">
+    <option selected>Choose...</option>
+    <option>...</option>
+    </select>
+    </div>
+    <div class="col-md-2">
+    <label for="inputZip" class="form-label">Zip</label>
+    <input type="text" class="form-control" id="inputZip">
+    </div>
+    <div class="col-12">
+    <div class="form-check">
+    <input class="form-check-input" type="checkbox" id="gridCheck">
+    <label class="form-check-label" for="gridCheck">
+    Check me out
+    </label>
+    </div>
+    </div>
+    <div class="col-12">
+    <button type="submit" class="btn btn-primary">Sign in</button>
+    </div>
+
+
+    <div class="row">
+    <div class="col-md-12 text-right">
+    <button type="submit" class="btn btn-success">Save</button>
+    </div>
+    </div>
+    </EditForm>*@
     }
 </div>
+
+@code {
+
+    List<string> ShippingMethods_1 = new List<string> { "OCEAN", "LAND", "COURIER", "AIR", "RAIL" };
+    List<string> ShippingMethods_2 = new List<string> { "FCL", "LCL or CFS" };
+
+    public String SelectedShippingMethod_1 { get; set; } = "OCEAN";
+    public String SelectedShippingMethod_2 { get; set; } = "LCL or CFS";
+}

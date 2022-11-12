@@ -27,6 +27,7 @@ namespace iwip.Blazor.Pages.PO.Shipping
         
         private bool loading { get; set; }
 
+        private PurchaseOrderDto PurchaseOrder { get; set; } = new();
         private ShippingDto Shipping { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
@@ -38,7 +39,11 @@ namespace iwip.Blazor.Pages.PO.Shipping
         {
             loading = true;
 
-            Shipping = await POAppService.GetShippingAsync(new Guid(Id), int.Parse(LineId));
+            PurchaseOrder = await POAppService.GetPOAsync(new Guid(Id));
+
+            var line = PurchaseOrder.PO_LINES.SingleOrDefault(l => l.PO_LINE_ID == int.Parse(LineId));
+
+            Shipping = line?.SHIPPING;
             
             loading = false;
             StateHasChanged();

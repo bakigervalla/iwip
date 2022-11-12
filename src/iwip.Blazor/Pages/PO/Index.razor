@@ -36,21 +36,22 @@
                             </ChildContent>
                             <ContentTemplate>
                                 <div class="inner-padding">
-                                    <SfGrid Width="840px" TValue="POLineDto" DataSource="@PO.PO_LINES" AllowPaging="false">
+                                    <SfGrid Width="940px" TValue="POLineDto" DataSource="@PO.PO_LINES" AllowPaging="false">
                                         @*Query="@(new Query().Where("PO_HEADER_ID", "equal", PO.PO_HEADER_ID))"*@
                                         <GridPageSettings PageSize="20"></GridPageSettings>
                                         <GridEvents CommandClicked="OnCommandClicked" TValue="POLineDto"></GridEvents>
                                         @* <SfDataManager Url="https://js.syncfusion.com/demos/ejservices/Wcf/Northwind.svc/Orders" CrossDomain="true"></SfDataManager>*@
                                         <GridColumns>
-                                            <GridColumn HeaderText="View Shipping" TextAlign="TextAlign.Center" Width="90">
+                                            <GridColumn HeaderText="Shipping" TextAlign="TextAlign.Center" Width="90">
                                                 <GridCommandColumns>
                                                     <GridCommandColumn ButtonOption="@(new CommandButtonOptions() { IconCss = "e-icons e-open-link", CssClass = "e-flat" })" Title="View"></GridCommandColumn>
                                                 </GridCommandColumns>
                                             </GridColumn>
                                             <GridColumn Field=@nameof(POLineDto.PO_LINE_ID) HeaderText="Line ID" Width="80"> </GridColumn>
-                                            <GridColumn Field=@nameof(POLineDto.ITEM_DESCRIPTION) HeaderText="Description" Width="160"></GridColumn>
                                             <GridColumn Field=@nameof(POLineDto.SKU) HeaderText="SKU" Width="90"></GridColumn>
-                                            <GridColumn Field=@nameof(POLineDto.PO_LINE_TYPE) HeaderText="Type" Width="70"></GridColumn>
+                                            <GridColumn Field=@nameof(POLineDto.ITEM_DESCRIPTION) HeaderText="Description" Width="220"></GridColumn>
+                                            <GridColumn Field=@nameof(POLineDto.REGION_1) HeaderText="Region" Width="90" />
+                                            <GridColumn Field=@nameof(POLineDto.PO_LINE_TYPE) HeaderText="Type" Width="120"></GridColumn>
                                             <GridColumn Field=@nameof(POLineDto.QUANTITY_ORDERED) HeaderText="Quanity" Format="N2" TextAlign="TextAlign.Right" Width="70"></GridColumn>
                                             <GridColumn Field=@nameof(POLineDto.NEED_BY_DATE) HeaderText="Need By Date" Width="110" TextAlign="TextAlign.Center"
                                                         Type="ColumnType.Date"
@@ -120,7 +121,7 @@
 
         public PurchaseOrderDto SelectedPO { get; set; }
         public POLineDto SelectedPOLine { get; set; }
-        
+
         public void DetailDataBoundHandler(DetailDataBoundEventArgs<PurchaseOrderDto> args)
         {
             SelectedPO = args.Data;
