@@ -1,33 +1,41 @@
-﻿using System;
+﻿using iwip.MongoDB;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.MongoDB;
+using Volo.Abp.MultiTenancy;
 using Volo.Abp.ObjectMapping;
-using static OpenIddict.Abstractions.OpenIddictConstants;
-using static System.Net.Mime.MediaTypeNames;
-using System.Linq.Expressions;
 
 namespace iwip.PO
 {
     public class POAppService : ApplicationService, IPOAppService
     {
         private readonly IRepository<PurchaseOrder, Guid> _poRepository;
+        private readonly IRepository<Shipping, Guid> _shippingRepository;
+        private readonly IMongoDbContextProvider<iwipMongoDbContext> _context;
+        private readonly IDataFilter _dataFilter;
 
-        public POAppService(IRepository<PurchaseOrder, Guid> poRepository)
+        public POAppService(
+             IRepository<PurchaseOrder, Guid> poRepository
+            , IRepository<Shipping, Guid> shippingRepository
+            , IMongoDbContextProvider<iwipMongoDbContext> context
+            , IDataFilter dataFilter
+            , IObjectMapper objectMapper)
         {
             _poRepository = poRepository;
+            _shippingRepository = shippingRepository;
+            _dataFilter = dataFilter;
+            _context = context;
 
             //GetPolicyName = POPermissions.PO.Default;
             //GetListPolicyName = POPermissions.PO.Default;
             //CreatePolicyName = POPermissions.PO.Create;
             //UpdatePolicyName = POPermissions.PO.Edit;
             //DeletePolicyName = POPermissions.PO.Delete;
-
         }
 
         public async Task<PurchaseOrderDto> CreateAsync(CreateUpdatePODto item)
@@ -43,25 +51,31 @@ namespace iwip.PO
             };
         }
 
-        public async Task<PurchaseOrderDto> UpdateAsync(CreateUpdatePODto updatePO)
-        {
-            var poItem = await _poRepository.UpdateAsync(
-                         new PurchaseOrder { POSTAL_CODE = updatePO.POSTAL_CODE }
-                     );
-
-            return ObjectMapper.Map<PurchaseOrder, PurchaseOrderDto>(poItem);
-        }
-
         public async Task DeleteAsync(Guid id)
         {
             await _poRepository.DeleteAsync(id);
         }
 
-        public async Task<List<PurchaseOrderDto>> GetListAsync()
+        public async Task<List<PurchaseOrderDto>> GetListAsync(bool disableTenant)
         {
-                var items = await _poRepository.GetListAsync();
-                return ObjectMapper.Map<List<PurchaseOrder>, List<PurchaseOrderDto>>(items);
+            try
+            {
+                List<PurchaseOrder> purchaseOrders;
+                if (disableTenant)
+                    using (_dataFilter.Disable<IMultiTenant>())
+                    {
+                        purchaseOrders = await _poRepository.GetListAsync();
+                    }
+                else
+                    purchaseOrders = await _poRepository.GetListAsync();
 
+                return ObjectMapper.Map<List<PurchaseOrder>, List<PurchaseOrderDto>>(purchaseOrders);
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message;
+                return null;
+            }
             //return items
             //    .Select(item => new PurchaseOrderDto
             //    {
@@ -92,17 +106,35 @@ namespace iwip.PO
             //    }).ToList();
         }
 
-        public async Task<ShippingDto> GetShippingAsync(Guid id, int lineId)
+        public Task<PurchaseOrderDto> UpdateAsync(PurchaseOrderDto updatePO)
+        {
+            return null;
+        }
+
+
+        // Shipping
+        public async Task<ShippingDto> GetShippingAsync(int lineId, bool disableTenant)
         {
             try
             {
-                var queryable = await _poRepository.GetQueryableAsync();
+                Expression<Func<Shipping, bool>> query = x => x.PO_LINE_ID == lineId;
 
-                var line = queryable.Where(q => q.Id == id).SelectMany(l => l.PO_LINES);
-
-                var shipping = line?.FirstOrDefault(c => c.PO_LINE_ID == lineId)?.SHIPPING;
+                Shipping shipping;
+                if (disableTenant)
+                    using (_dataFilter.Disable<IMultiTenant>())
+                    {
+                        shipping = await _shippingRepository.GetAsync(query);
+                    }
+                else
+                    shipping = await _shippingRepository.GetAsync(query);
 
                 return ObjectMapper.Map<Shipping, ShippingDto>(shipping);
+
+                /*
+                    var line = queryable.Where(q => q.Id == id).SelectMany(l => l.PO_LINES);
+                    var shipping = line?.FirstOrDefault(c => c.PO_LINE_ID == lineId)?.SHIPPING;
+                    return ObjectMapper.Map<Shipping, ShippingDto>(shipping);
+                */
             }
             catch (Exception ex)
             {
@@ -111,6 +143,11 @@ namespace iwip.PO
             }
         }
 
+        public async Task InsertShippingDocument(int lineId, ShippingDto shipping)
+        {
+            var update = ObjectMapper.Map<ShippingDto, Shipping>(shipping);
+            await _shippingRepository.UpdateAsync(update);
+        }
 
     }
 }

@@ -12,7 +12,7 @@ namespace iwip.PO
     {
         public POLine()
         {
-            SHIPPING = new Shipping();
+            // SHIPPING = new Shipping();
         }
 
         public int MANUFACTURER { get; set; }
@@ -67,6 +67,6 @@ namespace iwip.PO
         public string LAST_UPDATED_BY { get; set; }
         public string PO_ORDER_TYPE { get; set; }
 
-        public Shipping SHIPPING { get; set; }
+        /*public Shipping SHIPPING { get; set; }*/
     }
 }

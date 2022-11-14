@@ -1,13 +1,24 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using iwip.Helpers.Extensions;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
+using Volo.Abp.Domain.Entities;
+using Volo.Abp.MultiTenancy;
 
 namespace iwip.PO
 {
-    public class Shipping
+    public class Shipping : BasicAggregateRoot<Guid>, IMultiTenant
     {
+        public Shipping()
+        {
+            SHIPPING_DOCUMENTS = new List<ShippingDocument>();
+        }
+
+        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        public Guid? TenantId { get; set; }
         public int PO_HEADER_ID { get; set; }
         public int PO_LINE_ID { get; set; }
+        public int MANUFACTURER { get; set; }
         public string SHIP_TO_LOCATION { get; set; }
         public string SHIP_TO_SITE_DESCRIPTION { get; set; }
         public int SHIP_TO_LOCATION_ID { get; set; }

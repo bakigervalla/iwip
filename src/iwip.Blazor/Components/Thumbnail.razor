@@ -1,0 +1,52 @@
+﻿@using iwip.PO
+@using Volo.Abp.Application.Dtos
+
+@inject IJSRuntime _js
+
+<div>
+    <i class="fa @Icons[Document.MIME_TYPE]" aria-hidden="true"
+       alt="@Document.FILE_NAME"
+       title="@Document.FILE_NAME"
+       @onclick="(async () => await Download(Document.FILE_NAME, Document.CONTENT))"></i>
+       <p>@Document.FILE_NAME</p>
+</div>
+@*<img width="120" src="data:image/png;base64, @Document.CONTENT"
+     alt="@Document.FILE_NAME"
+     title="@Document.FILE_NAME"
+     @onclick="(async () => await Download(Document.FILE_NAME, Document.CONTENT))" />*@
+
+@code {
+    [Parameter]
+    public ShippingDocumentDto Document { get; set; }
+
+    public IDictionary<string, string> Icons = new Dictionary<string, string> {
+        {"image/bmp", "fa-file-image"},
+        {"text/csv", "fa-file-word-o"},
+        {"application/msword", "fa-file-word"},
+        {"application/vnd.openxmlformats-officedocument.wordprocessingml.document", "fa-file-word"},
+        {"application/gzip", "fa-file-archive"},
+        {"image/gif", "fa-file-image"},
+        {"text/html", "fa-html5"},
+        {"image/jpeg", "fa-file-image"},
+        {"audio/mpeg", "fa-file-video"},
+        {"video/mp4", "fa-file-video"},
+        {"video/mpeg", "fa-file-video"},
+        {"image/png", "fa-file-image"},
+        {"application/pdf", "fa-file-pdf"},
+        {"application/vnd.ms-powerpoint", "fa-file-powerpoint"},
+        {"application/vnd.openxmlformats-officedocument.presentationml.presentation", "fa-file-powerpoint"},
+        {"application/vnd.rar", "fa-file-archive"},
+        {"application/rtf", "fa-file-word"},
+        {"image/tiff", "fa-file-image"},
+        {"text/plain", "fa-file-text"},
+        {"application/vnd.ms-excel", "fa-file-excel"},
+        {"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "fa-file-excel"},
+        {"application/zip", "fa-file-archive"},
+        {"", "fa-file-archive"},
+    };
+
+    async Task Download(string filename, string content)
+    {
+        await _js.InvokeVoidAsync("jsSaveAsFile", filename, content);
+    }
+}

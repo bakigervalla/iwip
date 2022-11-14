@@ -1,0 +1,25 @@
+﻿.border-left {
+    border-left: 1px solid #808080
+}
+
+.thumbnail img {
+    border-radius: 8px;
+    box-shadow: 2px 4px #ccc;
+    margin: 10px 2px;
+    cursor: pointer
+}
+
+.thumbnail div {
+    text-align: center;
+    cursor: pointer
+}
+
+.thumbnail p {
+    font-size: 11px
+}
+
+.thumbnail div i {
+    color: #F72585;
+    font-size: 900px;
+    font-size: 40px;
+}

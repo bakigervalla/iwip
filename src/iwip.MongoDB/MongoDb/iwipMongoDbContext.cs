@@ -26,8 +26,10 @@ namespace iwip.MongoDB;
 [ConnectionStringName("Default")]
 public class iwipMongoDbContext : AbpMongoDbContext
 {
-    [MongoCollection("PurchaseOrders")]
+    [MongoCollection("iw_po")]
     public IMongoCollection<PurchaseOrder> PurchaseOrders => Collection<PurchaseOrder>();
+    [MongoCollection("iw_shipping")]
+    public IMongoCollection<Shipping> Shipping => Collection<Shipping>();
 
     protected override void CreateModel(IMongoModelBuilder modelBuilder)
     {
@@ -81,6 +83,7 @@ public class iwipMongoDbContext : AbpMongoDbContext
             //    //    item["_id"] = Guid.NewGuid(); // Guid.NewGuid().ToString(); // $"BinData(3, '{Guid.NewGuid()}')";
             //}
             //var newjson = jObj.ToString(Newtonsoft.Json.Formatting.Indented);
+
 
             var documents = BsonSerializer.Deserialize<List<BsonDocument>>(json);
             var collection = database.GetCollection<BsonDocument>(collectionName);

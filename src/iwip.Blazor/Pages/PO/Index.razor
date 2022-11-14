@@ -130,8 +130,8 @@
         public void OnCommandClicked(CommandClickEventArgs<POLineDto> args)
         {
             SelectedPOLine = args.RowData;
-            Console.WriteLine(args);
-            NavigationManager.NavigateTo($"/pos/{SelectedPO.Id}/shipping/{SelectedPOLine.PO_LINE_ID}");
+            // SelectedPO.PO_HEADER_ID
+            NavigationManager.NavigateTo($"/pos/shipping/{SelectedPOLine.PO_LINE_ID}");
         }
 
     }

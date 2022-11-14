@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using iwip.Helpers.Extensions;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace iwip.PO
             this.CREATION_DATE = DateTime.Now;
         }
 
+        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public Guid? TenantId { get; set; }
 
         //public override Guid Id { get; protected set; }

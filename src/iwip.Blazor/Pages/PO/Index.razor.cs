@@ -44,7 +44,8 @@ namespace iwip.Blazor.Pages.PO
 
             try
             {
-                PurchaseOrders = await POAppService.GetListAsync();
+                CurrentTenant.Change(null);
+                PurchaseOrders = await POAppService.GetListAsync(!CurrentUser.TenantId.HasValue);
             }
             catch(Exception ex)
             {
@@ -66,19 +67,19 @@ namespace iwip.Blazor.Pages.PO
             NewPO = null;
         }
 
-        private async Task UpdateAsync(PurchaseOrderDto poDto, IDictionary<string, object> input)
-        {
-            EditingPODto.PO_STATUS = input.GetOrDefault("PO_STATUS") == null ? poDto.PO_STATUS : input.GetOrDefault("PO_STATUS").ToString();
-            EditingPODto.MANUFACTURER = input.GetOrDefault("MANUFACTURER") == null ? poDto.MANUFACTURER : (int)input.GetOrDefault("MANUFACTURER");
-            /*EditingPODto.Price = input.GetOrDefault("Price") == null ? poDto.Price : (float)input.GetOrDefault("Price");*/
-            EditingPODto.PO_DATE = input.GetOrDefault("PO_DATE") == null ? poDto.PO_DATE : (DateTime)input.GetOrDefault("PO_DATE");
+        //private async Task UpdateAsync(PurchaseOrderDto poDto, IDictionary<string, object> input)
+        //{
+        //    EditingPODto.PO_STATUS = input.GetOrDefault("PO_STATUS") == null ? poDto.PO_STATUS : input.GetOrDefault("PO_STATUS").ToString();
+        //    EditingPODto.MANUFACTURER = input.GetOrDefault("MANUFACTURER") == null ? poDto.MANUFACTURER : (int)input.GetOrDefault("MANUFACTURER");
+        //    /*EditingPODto.Price = input.GetOrDefault("Price") == null ? poDto.Price : (float)input.GetOrDefault("Price");*/
+        //    EditingPODto.PO_DATE = input.GetOrDefault("PO_DATE") == null ? poDto.PO_DATE : (DateTime)input.GetOrDefault("PO_DATE");
 
-            await POAppService.UpdateAsync(EditingPODto);
+        //    await POAppService.UpdateAsync(EditingPODto);
 
-            await GetPOsAsync();
+        //    await GetPOsAsync();
 
-            EditingPODto = null;
-        }
+        //    EditingPODto = null;
+        //}
 
         private async Task DeleteAsync(PurchaseOrderDto item)
         {

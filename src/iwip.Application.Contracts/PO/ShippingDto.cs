@@ -7,8 +7,15 @@ namespace iwip.PO
 {
     public class ShippingDto
     {
+        public ShippingDto()
+        {
+            SHIPPING_DOCUMENTS = new List<ShippingDocumentDto>();
+        }
+        public Guid? TenantId { get; set; }
+        public Guid Id { get; set; }
         public int PO_HEADER_ID { get; set; }
         public int PO_LINE_ID { get; set; }
+        public int MANUFACTURER { get; set; }
         public string SHIP_TO_LOCATION { get; set; }
         public string SHIP_TO_SITE_DESCRIPTION { get; set; }
         public int SHIP_TO_LOCATION_ID { get; set; }

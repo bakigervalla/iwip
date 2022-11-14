@@ -8,7 +8,7 @@ namespace iwip.PO
     {
         public POLineDto()
         {
-            SHIPPING = new ShippingDto();
+            // SHIPPING = new ShippingDto();
         }
         public int MANUFACTURER { get; set; }
         public int PO_HEADER_ID { get; set; }
@@ -61,7 +61,7 @@ namespace iwip.PO
         public string LAST_UPDATED_BY { get; set; }
         public string PO_ORDER_TYPE { get; set; }
 
-        public ShippingDto SHIPPING { get; set; }
+        /*public ShippingDto SHIPPING { get; set; }*/
 
     }
 }

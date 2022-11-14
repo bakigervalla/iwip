@@ -9,9 +9,10 @@ public class iwipApplicationAutoMapperProfile : Profile
     {
         CreateMap<PurchaseOrder, PurchaseOrderDto>();
         CreateMap<POLine, POLineDto>();
-        CreateMap<Shipping, ShippingDto>();
-        CreateMap<ShippingDocumentDto, ShippingDocumentDto>();
+        CreateMap<Shipping, ShippingDto>().ReverseMap();
+        CreateMap<ShippingDocument, ShippingDocumentDto>().ReverseMap();
 
         CreateMap<PurchaseOrderDto, CreateUpdatePODto>();
     }
+
 }
