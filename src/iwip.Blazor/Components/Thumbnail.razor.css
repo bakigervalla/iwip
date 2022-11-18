@@ -6,12 +6,10 @@
     border-radius: 8px;
     box-shadow: 2px 4px #ccc;
     margin: 10px 2px;
-    cursor: pointer
 }
 
 .thumbnail div {
     text-align: center;
-    cursor: pointer
 }
 
 .thumbnail p {
@@ -23,3 +21,54 @@
     font-size: 900px;
     font-size: 40px;
 }
+
+
+.img_wrapper {
+    width: 180px;
+    position: relative;
+    display: inline-block;
+}
+
+.img_wrapper {
+    width: 100%;
+}
+
+    .img_wrapper:hover i.thumbnail,
+    .img_wrapper:hover p {
+        -webkit-filter: blur(1.7px);
+    }
+
+    .img_wrapper span {
+        display: none;
+        position: absolute;
+        top: 40px;
+        left: 30px;
+    }
+
+    .img_wrapper:hover span {
+        display: table-cell;
+    }
+
+    .img_wrapper span i.download {
+        font-size: 17px;
+        color: #333333;
+        font-weight: bold;
+        position: absolute;
+        top: -25px;
+    }
+
+    .img_wrapper span i.delete {
+        font-size: 17px;
+        color: #333333;
+        font-weight: bold;
+        position: absolute;
+        left: 50px;
+        top: -25px;
+    }
+
+        .img_wrapper span i.delete:hover,
+        .img_wrapper span i.download:hover {
+            color: blue;
+            font-size: 20px;
+            cursor: pointer
+        }

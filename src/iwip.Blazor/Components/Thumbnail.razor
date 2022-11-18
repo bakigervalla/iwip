@@ -3,12 +3,16 @@
 
 @inject IJSRuntime _js
 
-<div>
-    <i class="fa @Icons[Document.MIME_TYPE]" aria-hidden="true"
+<div class="img_wrapper">
+    <i class="thumbnail fa @Icons[Document.MIME_TYPE]" aria-hidden="true"
        alt="@Document.FILE_NAME"
-       title="@Document.FILE_NAME"
-       @onclick="(async () => await Download(Document.FILE_NAME, Document.CONTENT))"></i>
-       <p>@Document.FILE_NAME</p>
+       title="@Document.FILE_NAME" />
+    <p>@Document.FILE_NAME</p>
+    <span><i class="download fa fa-download" title="Download" @onclick="(async () => await Download(Document.FILE_NAME, Document.CONTENT))" /></span>
+    <span><i class="delete fa fa-trash" title="Delete" @onclick="(async () => await DeleteFile(Document.FILE_NAME) )" /></span>
+
+    @*@onclick="(async () => await Download(Document.FILE_NAME, Document.CONTENT))"></i>*@
+    @*<Span Class="delete fa fa-solid fa-trash-can" title="Delete" @onclick="(async () => await DeleteFile(Document.FILE_NAME) )"></Span>*@
 </div>
 @*<img width="120" src="data:image/png;base64, @Document.CONTENT"
      alt="@Document.FILE_NAME"
@@ -49,4 +53,13 @@
     {
         await _js.InvokeVoidAsync("jsSaveAsFile", filename, content);
     }
+
+    [Parameter]
+    public EventCallback<string> OnRemoveShipmentDocument { get; set; }
+
+    protected async Task DeleteFile(string filename)
+    {
+        await OnRemoveShipmentDocument.InvokeAsync(filename);
+    }
+
 }

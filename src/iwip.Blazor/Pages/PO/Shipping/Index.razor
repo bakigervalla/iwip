@@ -102,7 +102,7 @@
                             <textarea class="form-control" id="ADDRESS_LINE" rows="6">
                                 @string.Format("{0}\n{1}\n{2}\n{3}\n{4}, {5}\n{6}\n{7}", Shipping.ADDRESS_LINE_1, Shipping.ADDRESS_LINE_2, Shipping.ADDRESS_LINE_3, 
                             Shipping.TOWN_OR_CITY, Shipping.COUNTRY, Shipping.POSTAL_CODE, Shipping.REGION_1, Shipping.REGION_2)
-                                                                                                        </textarea>
+                                                                                                                        </textarea>
                         </div>
                     </div>
                     <div class="row input-group">
@@ -126,7 +126,7 @@
                     <h4>Shipping Documents</h4>
 
                     <SfUploader AutoUpload="false">
-                        <UploaderEvents ValueChange="OnFileChangeUpload"></UploaderEvents>
+                        <UploaderEvents ValueChange="UploadShippmentDocument" OnRemove="RemoveShipmentDocument"></UploaderEvents>
                     </SfUploader>
                     <br />
                     <Div Class="border-left border-info">
@@ -134,7 +134,8 @@
                             @foreach (var doc in Shipping.SHIPPING_DOCUMENTS)
                             {
                                 <div class="thumbnail col-sm-6">
-                                    <Thumbnail Document="@doc" />
+                                    <Thumbnail Document="@doc"
+                                               OnRemoveShipmentDocument="RemoveShipmentDocument" />
                                 </div>
                             }
                         </div>

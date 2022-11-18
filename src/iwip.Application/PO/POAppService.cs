@@ -143,7 +143,7 @@ namespace iwip.PO
             }
         }
 
-        public async Task InsertShippingDocument(int lineId, ShippingDto shipping)
+        public async Task UpdateShipping(int lineId, ShippingDto shipping)
         {
             var update = ObjectMapper.Map<ShippingDto, Shipping>(shipping);
             await _shippingRepository.UpdateAsync(update);

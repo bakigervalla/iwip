@@ -1,12 +1,18 @@
-﻿using iwip.Helpers.Extensions;
+﻿using Autofac.Core;
 using iwip.PO;
 using Microsoft.AspNetCore.Components;
 using Syncfusion.Blazor.Inputs;
 using System;
+using System.Buffers.Text;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp.AspNetCore.Components.Messages;
+using Volo.Abp.AspNetCore.Components.Notifications;
 using Volo.Abp.Users;
+using static System.Net.WebRequestMethods;
 using IObjectMapper = Volo.Abp.ObjectMapping.IObjectMapper;
+
 
 namespace iwip.Blazor.Pages.PO.Shipping
 {
@@ -23,6 +29,12 @@ namespace iwip.Blazor.Pages.PO.Shipping
 
         [Inject]
         private ICurrentUser CurrentUser { get; set; }
+
+        [Inject]
+        private IUiNotificationService Notify { get; set; }
+
+        [Inject]
+        private IUiMessageService UIMessageService { get; set; }
 
         private bool loading { get; set; }
 
@@ -48,69 +60,62 @@ namespace iwip.Blazor.Pages.PO.Shipping
             StateHasChanged();
         }
 
-        private async Task OnFileChangeUpload(UploadChangeEventArgs args)
+        private async Task UploadShippmentDocument(UploadChangeEventArgs args)
         {
             foreach (var file in args.Files)
             {
                 try
                 {
-                    var path = @"path" + file.FileInfo.Name;
-                    string base64;
+                    var bytes = file.Stream.ToArray();
+                    var base64 = Convert.ToBase64String(bytes);
 
-                    FileStream filestream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite);
-                    await file.Stream.CopyToAsync(filestream);
-                    
-                    using (var reader = new System.IO.StreamReader(file.Stream))
-                    {
-                        byte[] buffer = new byte[file.Stream.Length];
-                        var inputStream = new MemoryStream(buffer);
-                        base64 = Convert.ToBase64String(inputStream.ToArray());
-                    }
-            
                     Shipping.SHIPPING_DOCUMENTS.Add(new ShippingDocumentDto
                     {
                         FILE_NAME = file.FileInfo.Name,
-                        MIME_TYPE = MimeTypes.GetMimeType(path),
+                        MIME_TYPE = MimeTypes.GetMimeType(file.FileInfo.Type),
                         CONTENT = base64,
                         CREATE_DATE = DateTime.Now,
                         CREATED_BY = CurrentUser.Id
                     });
 
-                    await POAppService.InsertShippingDocument(Shipping.PO_LINE_ID, Shipping);
+                    await POAppService.UpdateShipping(Shipping.PO_LINE_ID, Shipping);
 
-                    //Shipping.SHIPPING_DOCUMENTS.Add(new ShippingDocumentDto
-                    //{
-                    //    NAME = file.FileInfo.Name,
-                    //    CREATE_DATE = DateTime.Now,
-                    //    FILE_CONTENT = base64,
-                    //    MIME_TYPE = MimeTypes.GetMimeType(path),
-                    //    CREATED_BY = CurrentUser.Id
+                    await Notify.Info("Uploaded Successfully.");
 
-                    //});
-                    //filestream.Close();
-                    //file.Stream.Close();
                 }
                 catch (Exception ex)
                 {
-                    string message = ex.Message;
+                    await Notify.Info(ex.Message);
                 }
             }
-
-            // var updateDto = Mapper.Map<PurchaseOrderDto, CreateUpdatePODto>(PurchaseOrder);
-
-            // POAppService.UpdateAsync(PurchaseOrder);
         }
 
-
-        private byte[] ReadFully(Stream input)
+        private async Task RemoveShipmentDocument(RemovingEventArgs args)
         {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                input.CopyTo(ms);
-                return ms.ToArray();
-            }
+            var document = Shipping.SHIPPING_DOCUMENTS.SingleOrDefault(x => x.FILE_NAME == args.FilesData[0].Name);
 
+            if (document == null) return;
+
+            Shipping.SHIPPING_DOCUMENTS.Remove(document);
+
+            await POAppService.UpdateShipping(Shipping.PO_LINE_ID, Shipping);
         }
+
+        private async Task RemoveShipmentDocument(string filename)
+        {
+            var confirmed = await UIMessageService.Confirm("Are you sure to delete this file?");
+            if (!confirmed) return;
+            
+            var document = Shipping.SHIPPING_DOCUMENTS.SingleOrDefault(x => x.FILE_NAME == filename);
+
+            if (document == null) return;
+
+            Shipping.SHIPPING_DOCUMENTS.Remove(document);
+
+            await POAppService.UpdateShipping(Shipping.PO_LINE_ID, Shipping);
+        }
+
+
         private async Task Save()
         {
             //var updatedPO = Mapper.Map<PurchaseOrderDto, CreateUpdatePODto>(PO);

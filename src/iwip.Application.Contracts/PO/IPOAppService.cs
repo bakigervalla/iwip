@@ -18,6 +18,6 @@ namespace iwip.PO
 
         // Shipping
         Task<ShippingDto> GetShippingAsync(int lineId, bool disableTenant);
-        Task InsertShippingDocument(int lineId, ShippingDto shipping);
+        Task UpdateShipping(int lineId, ShippingDto shipping);
     }
 }

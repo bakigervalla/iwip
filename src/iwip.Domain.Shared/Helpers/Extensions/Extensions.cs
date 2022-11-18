@@ -4,23 +4,22 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace iwip.Helpers.Extensions
 {
     public static class Extensions
     {
-        public static string ToBase64String(this FileStream stream)
+        public static byte[] ToBase64String(this FileStream stream)
         {
-            byte[] bytes;
-            using (var memoryStream = new MemoryStream())
+            using (stream)
             {
-                stream.CopyTo(memoryStream);
-                bytes = memoryStream.ToArray();
+                using (MemoryStream memStream = new MemoryStream())
+                {
+                    stream.CopyTo(memStream);
+                    return memStream.ToArray();
+                }
             }
-
-            string base64 = Convert.ToBase64String(bytes);
-            return base64;
-            // return new MemoryStream(Encoding.UTF8.GetBytes(base64));
         }
 
         public static void ToString(this string fileName, string serializedFile)
