@@ -4,6 +4,7 @@ using Syncfusion.Blazor.Grids;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Volo.Abp.MultiTenancy;
 
 namespace iwip.Blazor.Pages.PO
 {
@@ -44,8 +45,8 @@ namespace iwip.Blazor.Pages.PO
 
             try
             {
-                CurrentTenant.Change(null);
-                PurchaseOrders = await POAppService.GetListAsync(!CurrentUser.TenantId.HasValue);
+                /*CurrentTenant.Change(null);*/
+                PurchaseOrders = await POAppService.GetListAsync(!CurrentTenant.Id.HasValue);
             }
             catch(Exception ex)
             {

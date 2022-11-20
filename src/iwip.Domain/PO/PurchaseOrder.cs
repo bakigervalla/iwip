@@ -21,7 +21,7 @@ namespace iwip.PO
             this.CREATION_DATE = DateTime.Now;
         }
 
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        /*[BsonRepresentation(MongoDB.Bson.BsonType.String)]*/
         public Guid? TenantId { get; set; }
 
         //public override Guid Id { get; protected set; }

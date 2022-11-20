@@ -1,8 +1,8 @@
-﻿using System;
+﻿using iwip.MongoDb.Interfaces;
+using System;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
-using static iwip.MongoDB.iwipMongoDbContext;
 
 namespace iwip.Import
 {

@@ -1,6 +1,9 @@
 use iwip;
 SELECT CONCAT(json_object(
-  "TENANT_ID", h.MANUFACTURER,
+  "TenantId", CASE WHEN h.MANUFACTURER = 8563 THEN '75AB458E-E04F-961C-2F83-3A07A7C3CC34' 
+				   WHEN h.MANUFACTURER = 8564 THEN '7ED3B681-0CDF-0F64-C57D-3A07A7C40D00'
+                   ELSE '' 
+			  END,
   "MANUFACTURER", h.MANUFACTURER,
   "PO_HEADER_ID", h.PO_HEADER_ID,
   "PURCHASE_ORDER_NUMBER", h.PURCHASE_ORDER_NUMBER,
@@ -26,16 +29,16 @@ SELECT CONCAT(json_object(
   "VENDOR_NUMBER", h.VENDOR_NUMBER,
   "PARTY_NUMBER", h.PARTY_NUMBER,
   'PO_STATUS', h.PO_STATUS,
-'CREATION_DATE', json_object("$date", DATE_FORMAT(h.CREATION_DATE,'%Y-%m-%dT%TZ')), 
-'PO_LINES', JSON_ARRAY(json_object(
+ 'CREATION_DATE', json_object("$date", DATE_FORMAT(h.CREATION_DATE,'%Y-%m-%dT%TZ')), 
+ 'PO_LINES', (SELECT JSON_ARRAYAGG(json_object(
 								"MANUFACTURER", l.MANUFACTURER,
                                 "PO_HEADER_ID", l.PO_HEADER_ID,
                                 "PO_LINE_ID", l.PO_LINE_ID,
                                 "LINE_NUM", l.LINE_NUM,
-                                "ITEM_DESCRIPTION", REPLACE(l.ITEM_DESCRIPTION, "\"", "'"),
+                                "ITEM_DESCRIPTION", REPLACE(l.ITEM_DESCRIPTION, '"', "'"),
                                 "UNIT_MEAS_LOOKUP_CODE", l.UNIT_MEAS_LOOKUP_CODE,
                                 "NOTE_TO_VENDOR", l.NOTE_TO_VENDOR,
-                                "SKU", l.SKU,
+                                "SKU", REPLACE(l.SKU, '"', "'"),
                                 "QUANTITY_REMAINING", l.QUANTITY_REMAINING,
                                 "EX_FACTORY_DATE", l.EX_FACTORY_DATE,
                                 "PO_LINE_TYPE", l.PO_LINE_TYPE,
@@ -71,10 +74,10 @@ SELECT CONCAT(json_object(
                                 "LAST_UPDATE_DATE", DATE_FORMAT(l.LAST_UPDATE_DATE,'%Y-%m-%dT%TZ'),
                                 "LAST_UPDATED_BY", l.LAST_UPDATED_BY,
                                 "PO_ORDER_TYPE", l.PO_ORDER_TYPE
-								)
-)), ',') as 'json' 
+							)
+				) FROM s_po_lines l WHERE h.PO_HEADER_ID = l.PO_HEADER_ID)
+), ',') as 'json' 
 INTO OUTFILE 'c:/wamp64/tmp/iw_po.json' ## IMPORTANT you may want to adjust outfile path here
 FROM s_po_header h
-INNER JOIN s_po_lines l ON l.PO_HEADER_ID = h.PO_HEADER_ID
 WHERE YEAR(h.CREATION_DATE) IN (2001, 2022)
 ;

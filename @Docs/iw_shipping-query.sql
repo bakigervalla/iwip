@@ -1,8 +1,12 @@
 -- use iwip;
-SELECT Concat(json_object("TENANT_ID", l.MANUFACTURER,
+SELECT Concat(json_object(
+				  "TenantId", CASE WHEN l.MANUFACTURER = 8563 THEN '75AB458E-E04F-961C-2F83-3A07A7C3CC34' 
+								   WHEN l.MANUFACTURER = 8564 THEN '7ED3B681-0CDF-0F64-C57D-3A07A7C40D00'
+								   ELSE '' 
+							  END,
 					"MANUFACTURER", l.MANUFACTURER,
 					"PO_HEADER_ID", l.PO_HEADER_ID,
-                    "PO_LINE_ID",   l.PO_HEADER_ID,
+                    "PO_LINE_ID",   l.PO_LINE_ID,
 					"SHIP_TO_LOCATION", l.SHIP_TO_LOCATION,
 					"SHIP_TO_SITE_DESCRIPTION", l.SHIP_TO_SITE_DESCRIPTION,
 					"SHIP_TO_LOCATION_ID", l.SHIP_TO_LOCATION_ID,
@@ -30,11 +34,9 @@ SELECT Concat(json_object("TENANT_ID", l.MANUFACTURER,
 					"BUILD_WEEK", DATE_FORMAT(l.BUILD_WEEK,'%Y-%m-%dT%TZ'),
 					"SHIP_TO_SITE_REGION", l.SHIP_TO_SITE_REGION,
                     "SHIPPING_DOCUMENTS", JSON_ARRAY(json_object(
-											 "FILE_NAME", l.SHIP_TO_SITE_DESCRIPTION,
-											 "MIME_TYPE", l.SHIP_TO_LOCATION_ID,
-											 "CONTENT", l.ADDRESS_STYLE,
-											 "CREATED_BY", l.ADDRESS_LINE_1,
-											 "CREATE_DATE", l.ADDRESS_LINE_2
+											 "FILE_NAME", '',
+											 "MIME_TYPE", '',
+											 "CREATE_DATE", DATE_FORMAT(NOW(),'%Y-%m-%dT%TZ')
 										  )
 )), ',') as 'json' 
 INTO OUTFILE 'c:/wamp64/tmp/iw_shipping.json'

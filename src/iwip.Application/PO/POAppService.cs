@@ -58,24 +58,17 @@ namespace iwip.PO
 
         public async Task<List<PurchaseOrderDto>> GetListAsync(bool disableTenant)
         {
-            try
-            {
-                List<PurchaseOrder> purchaseOrders;
-                if (disableTenant)
-                    using (_dataFilter.Disable<IMultiTenant>())
-                    {
-                        purchaseOrders = await _poRepository.GetListAsync();
-                    }
-                else
+            List<PurchaseOrder> purchaseOrders;
+            if (disableTenant)
+                using (_dataFilter.Disable<IMultiTenant>())
+                {
                     purchaseOrders = await _poRepository.GetListAsync();
+                }
+            else
+                purchaseOrders = await _poRepository.GetListAsync();
 
-                return ObjectMapper.Map<List<PurchaseOrder>, List<PurchaseOrderDto>>(purchaseOrders);
-            }
-            catch (Exception ex)
-            {
-                string err = ex.Message;
-                return null;
-            }
+            return ObjectMapper.Map<List<PurchaseOrder>, List<PurchaseOrderDto>>(purchaseOrders);
+
             //return items
             //    .Select(item => new PurchaseOrderDto
             //    {

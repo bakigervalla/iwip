@@ -8,6 +8,9 @@ namespace iwip.PO
     public class PurchaseOrderDto
     {
         public Guid Id { get; set; }
+
+        public Guid? TenantId { get; set; }
+
         public int MANUFACTURER { get; set; }
         public int PO_HEADER_ID { get; set; }
         public string PURCHASE_ORDER_NUMBER { get; set; }
