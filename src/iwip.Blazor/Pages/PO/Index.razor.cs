@@ -88,7 +88,7 @@ namespace iwip.Blazor.Pages.PO
                 return;
 
             await POAppService.DeleteAsync(item.Id);
-            await Notify.Info("Deleted the PO item.");
+            await Notify.Info(L["PO:DeletedPOItem"]);
             PurchaseOrders.Remove(item);
         }
 

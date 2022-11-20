@@ -17,7 +17,7 @@
 
 <div class="container">
 
-    <SfSpinner Visible="@loading" Type="@SpinnerType.Bootstrap4" Size="100" Label="Data loading">
+    <SfSpinner Visible="@loading" Type="@SpinnerType.Bootstrap4" Size="100" Label="@L["Gen:DataLoading"]">
     </SfSpinner>
 
     <SfGrid Width="1200px" @ref="DefaultGrid" DataSource="@PurchaseOrders" AllowGrouping="true" AllowPaging="true" AllowFiltering="true" AllowSorting="true" Height=" 500">

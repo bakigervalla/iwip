@@ -2,25 +2,28 @@
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.Inputs
 @using iwip.Blazor.Components
+@using iwip.Localization
+@using Microsoft.Extensions.Localization
+@inherits iwipComponentBase
 
 <div class="content">
     @if (Shipping == null)
     {
-        <SfSpinner Visible="@loading" Type="@SpinnerType.Bootstrap4" Size="100" Label="Data loading">
+        <SfSpinner Visible="@loading" Type="@SpinnerType.Bootstrap4" Size="100" Label="@L["Gen:DataLoading"]">
         </SfSpinner>
     }
     else
     {
         <div class="card p-3 px-4">
             <div class="pb-3">
-                <Header Title="Shipment Management" Desciription="@string.Format("PO #: {0} | PO Line #: {1}", Shipping.PO_HEADER_ID, LineId )"></Header>
+                <Header Title="Shipment Management" Desciription="@(L["PO:Number"] + Shipping.PO_HEADER_ID + L["PO:LineNumber"] + LineId)"></Header>
             </div>
 
             <Div Class="row">
                 <form class="col-sm-9">
                     <fieldset class="form-group ">
                         <div class="row">
-                            <legend class="col-form-label col-sm-3 pt-0">Shipping method 1</legend>
+                            <legend class="col-form-label col-sm-3 pt-0">@L["Shipping:Method1"]</legend>
                             <div class="col-sm-8">
                                 @{
                                     foreach (var method in ShippingMethods_1)
@@ -38,7 +41,7 @@
                     </fieldset>
                     <fieldset class="form-group ">
                         <div class="row">
-                            <legend class="col-form-label col-sm-3 pt-0">Shipping method 2</legend>
+                            <legend class="col-form-label col-sm-3 pt-0">@L["Shipping:Method2"]</legend>
                             <div class="col-sm-8">
                                 @{
                                     foreach (var method in ShippingMethods_2)
@@ -56,13 +59,13 @@
                     </fieldset>
                     <div class="row col-sm-10">
                         <div class="form-group col">
-                            <label for="SHIP_TO_LOCATION" class="col-sm-4 col-form-label">Location</label>
+                            <label for="SHIP_TO_LOCATION" class="col-sm-4 col-form-label">@L["Shipping:Location"]</label>
                             <div class="col">
                                 <input type="text" class="form-control" id="SHIP_TO_LOCATION" value="@Shipping.SHIP_TO_LOCATION">
                             </div>
                         </div>
                         <div class="form-group col">
-                            <label for="LINE_LOCATION_ID" class="col-sm-4 col-form-label">Location ID</label>
+                            <label for="LINE_LOCATION_ID" class="col-sm-4 col-form-label">@L["Shipping:LocationID"]</label>
                             <div class="col">
                                 <input type="text" class="form-control" id="LINE_LOCATION_ID" value="@Shipping.LINE_LOCATION_ID">
                             </div>
@@ -70,13 +73,13 @@
                     </div>
                     <div class="row col-sm-10">
                         <div class="form-group col">
-                            <label for="SHIP_TO_SITE_REGION" class="col-sm-6 col-form-label">Ship to Site Region</label>
+                            <label for="SHIP_TO_SITE_REGION" class="col-sm-6 col-form-label">@L["Shipping:SiteRegion"]</label>
                             <div class="col">
                                 <input type="text" class="form-control" id="SHIP_TO_SITE_REGION" value="@Shipping.SHIP_TO_SITE_REGION">
                             </div>
                         </div>
                         <div class="form-group col">
-                            <label for="SHIP_TO_SITE_DESCRIPTION" class="col-sm-4 col-form-label">Site Description</label>
+                            <label for="SHIP_TO_SITE_DESCRIPTION" class="col-sm-4 col-form-label">@L["Shipping:SiteDescription"]</label>
                             <div class="col">
                                 <input type="text" class="form-control" id="SHIP_TO_SITE_DESCRIPTION" value="@Shipping.SHIP_TO_SITE_DESCRIPTION">
                             </div>
@@ -84,36 +87,36 @@
                     </div>
                     <div class="row col-sm-10">
                         <div class="form-group col">
-                            <label for="TELEPHONE_NUMBER_1" class="col-sm-4 col-form-label">Phone</label>
+                            <label for="TELEPHONE_NUMBER_1" class="col-sm-4 col-form-label">@L["Shipping:Phone"]</label>
                             <div class="col">
                                 <input type="text" class="form-control" id="TELEPHONE_NUMBER_1" value="@Shipping.TELEPHONE_NUMBER_1">
                             </div>
                         </div>
                         <div class="form-group col">
-                            <label for="TIMEZONE_CODE" class="col-sm-4 col-form-label">Time Zone</label>
+                            <label for="TIMEZONE_CODE" class="col-sm-4 col-form-label">@L["Shipping:TimeZone"]</label>
                             <div class="col">
                                 <input type="text" class="form-control" id="TIMEZONE_CODE" value="@Shipping.TIMEZONE_CODE">
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-10">
-                        <label for="ADDRESS_LINE" class="col-sm-4 col-form-label">Address</label>
+                        <label for="ADDRESS_LINE" class="col-sm-4 col-form-label">@L["Shipping:Address"]</label>
                         <div class="col">
                             <textarea class="form-control" id="ADDRESS_LINE" rows="6">
                                 @string.Format("{0}\n{1}\n{2}\n{3}\n{4}, {5}\n{6}\n{7}", Shipping.ADDRESS_LINE_1, Shipping.ADDRESS_LINE_2, Shipping.ADDRESS_LINE_3, 
                             Shipping.TOWN_OR_CITY, Shipping.COUNTRY, Shipping.POSTAL_CODE, Shipping.REGION_1, Shipping.REGION_2)
-                                                                                                                        </textarea>
+                                                                                                                                        </textarea>
                         </div>
                     </div>
                     <div class="row input-group">
                         <div class="form-group col-sm-5">
-                            <label for="NEED_BY_DATE" class="col-sm-4 col-form-label">Needed by Date</label>
+                            <label for="NEED_BY_DATE" class="col-sm-4 col-form-label">@L["Shipping:NeededByDate"]</label>
                             <div class="col">
                                 <input type="text" class="form-control" id="NEED_BY_DATE" value="@Shipping.NEED_BY_DATE?.ToString("d")">
                             </div>
                         </div>
                         <div class="form-group col-sm-5">
-                            <label for="PROMISED_DATE" class="col-sm-4 col-form-label">Promised Date</label>
+                            <label for="PROMISED_DATE" class="col-sm-4 col-form-label">@L["Shipping:PromisedDate"]</label>
                             <div class="col">
                                 <input type="text" class="form-control" id="PROMISED_DATE" value="@Shipping.PROMISED_DATE?.ToString("d")">
                             </div>
@@ -123,7 +126,7 @@
 
                 <!-- Attachments -->
                 <div Class="col-sm-3 ">
-                    <h4>Shipping Documents</h4>
+                    <h4>@L["Shipping:ShippingDocuments"]</h4>
 
                     <SfUploader AutoUpload="false">
                         <UploaderEvents ValueChange="UploadShippmentDocument" OnRemove="RemoveShipmentDocument"></UploaderEvents>
@@ -135,7 +138,7 @@
                             {
                                 <div class="thumbnail col-sm-6">
                                     <Thumbnail Document="@doc"
-                                               OnRemoveShipmentDocument="RemoveShipmentDocument" />
+                                       OnRemoveShipmentDocument="RemoveShipmentDocument" />
                                 </div>
                             }
                         </div>

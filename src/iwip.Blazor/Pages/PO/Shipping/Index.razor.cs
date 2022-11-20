@@ -80,7 +80,7 @@ namespace iwip.Blazor.Pages.PO.Shipping
 
                     await POAppService.UpdateShipping(Shipping.PO_LINE_ID, Shipping);
 
-                    await Notify.Info("Uploaded Successfully.");
+                    await Notify.Info(L["Shipping:UploadedSuccess"]);
 
                 }
                 catch (Exception ex)
@@ -103,7 +103,7 @@ namespace iwip.Blazor.Pages.PO.Shipping
 
         private async Task RemoveShipmentDocument(string filename)
         {
-            var confirmed = await UIMessageService.Confirm("Are you sure to delete this file?");
+            var confirmed = await UIMessageService.Confirm(L["Shipping:PromptRemoveAttachment"]);
             if (!confirmed) return;
             
             var document = Shipping.SHIPPING_DOCUMENTS.SingleOrDefault(x => x.FILE_NAME == filename);
