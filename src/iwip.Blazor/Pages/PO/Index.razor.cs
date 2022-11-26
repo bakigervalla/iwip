@@ -20,7 +20,7 @@ namespace iwip.Blazor.Pages.PO
         private CreateUpdatePODto EditingPODto { get; set; } = new CreateUpdatePODto();
 
 
-        public string SelectedOrder{ get; set; }
+        public string SelectedOrder { get; set; }
         public int? RowIndex { get; set; } = 1003;
         public void RowSelecthandler(RowSelectEventArgs<PurchaseOrderDto> Args)
         {
@@ -48,7 +48,7 @@ namespace iwip.Blazor.Pages.PO
                 /*CurrentTenant.Change(null);*/
                 PurchaseOrders = await POAppService.GetListAsync(!CurrentTenant.Id.HasValue);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await Notify.Info(ex.Message + Environment.NewLine + ex.InnerException?.Message);
             }
@@ -56,17 +56,60 @@ namespace iwip.Blazor.Pages.PO
             StateHasChanged();
         }
 
-        private async Task CreateAsync(IDictionary<string, object> input)
+        private async Task CreateAsync()
+        {
+            try
+            {
+                var entity = new PurchaseOrderDto
+                {
+                    PO_DATE = DateTime.Now,
+                    PARTY_ID = 1071595,
+                    PO_STATUS = "",
+                    CANCEL_FLAG = "N",
+                    CLOSED_CODE = "OPEN",
+                    VENDOR_NAME = "HUIZHOU BYD ELECTRONIC CO LTD",
+                    ENABLED_FLAG = "Y",
+                    MANUFACTURER = 8563,
+                    PARTY_NUMBER = "85375",
+                    PO_HEADER_ID = 5327744,
+                    REVISED_DATE = DateTime.Now,
+                    REVISION_NUM = 6,
+                    SUMMARY_FLAG = "N",
+                    APPROVED_DATE = DateTime.Now,
+                    APPROVED_FLAG = "R",
+                    CREATION_DATE = DateTime.Now,
+                    VENDOR_NUMBER = "8563",
+                    TenantId = CurrentTenant.Id,
+                    /*LAST_UPDATED_BY = "1532",
+                    LAST_UPDATE_DATE = DateTime.Now,*/
+                    /*                TYPE_LOOKUP_CODE = TypeCode.,*/
+                    AUTHORIZATION_STATUS = "REQUIRES REAPPROVAL",
+                    PURCHASE_ORDER_NUMBER = "2045031",
+                    FREIGHT_TERMS_LOOKUP_CODE = "PREPAY AND ADD"
+                };
+
+                var result = await POAppService.CreateAsync(entity);
+
+                PurchaseOrders.Add(result);
+                NewPO = null;
+            }
+            catch (Exception ex)
+            {
+                await Notify.Error(ex.Message);
+            }
+        }
+
+/*        private async Task CreateAsync(IDictionary<string, object> input)
         {
             NewPO.MANUFACTURER = (int)input.GetOrDefault("MANUFACTURER");
-            NewPO.PO_STATUS= input.GetOrDefault("PO_STATUS").ToString();
-            /*NewPO.Price = (float)input.GetOrDefault("Price");*/
+            NewPO.PO_STATUS = input.GetOrDefault("PO_STATUS").ToString();
+            *//*NewPO.Price = (float)input.GetOrDefault("Price");*//*
             NewPO.PO_DATE = (DateTime)input.GetOrDefault("PO_DATE");
 
             var result = await POAppService.CreateAsync(NewPO);
             PurchaseOrders.Add(result);
             NewPO = null;
-        }
+        }*/
 
         //private async Task UpdateAsync(PurchaseOrderDto poDto, IDictionary<string, object> input)
         //{

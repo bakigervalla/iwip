@@ -5,6 +5,7 @@ using MongoDB.Bson.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories.MongoDB;
@@ -56,17 +57,22 @@ namespace iwip.MongoDb
             foreach (var document in documents)
             {
                 document.Add("_id", new BsonBinaryData(Guid.NewGuid()));
+
                 foreach (BsonElement el in document.Elements.ToList())
                 {
                     if (el.Value.IsBsonArray)
                         ParseArrayElement(el.Value.AsBsonArray);
                     if (el.Value.IsBsonDocument)
                         ParseDocumentElement(el.Value.AsBsonDocument);
+                    //if (el.Name.ToLower() == "tenantid")
+                    //    document.SetElement(i, new BsonElement(el.Name, new BsonBinaryData(Encoding.ASCII.GetBytes("jkWrdU/gHJYvgzoHp8PMNA=="))));
                     else
                     {
                         var str = DateTime.TryParse(el.Value.ToString(), out DateTime outDate);
                         if (str)
                             document.SetElement(i, new BsonElement(el.Name, outDate));
+                        else
+                            document.SetElement(i, new BsonElement(el.Name, el.Value));
                     }
                     i++;
                 }
@@ -88,9 +94,16 @@ namespace iwip.MongoDb
                     if (el.Value.IsBsonDocument)
                         ParseDocumentElement(el.Value.AsBsonDocument);
 
-                    var str = DateTime.TryParse(el.Value.ToString(), out DateTime outDate);
-                    if (str)
-                        ((BsonDocument)document).SetElement(i, new BsonElement(el.Name, outDate));
+                    //if (el.Name.ToLower() == "tenantid")
+                    //    ((BsonDocument)document).SetElement(i, new BsonElement(el.Name, BsonBinaryData.Create(el.Value.ToString())));
+                    else
+                    {
+                        var str = DateTime.TryParse(el.Value.ToString(), out DateTime outDate);
+                        if (str)
+                            ((BsonDocument)document).SetElement(i, new BsonElement(el.Name, outDate));
+                        else
+                            ((BsonDocument)document).SetElement(i, new BsonElement(el.Name, el.Value));
+                    }
                     i++;
                 }
                 i = 0;
@@ -106,9 +119,16 @@ namespace iwip.MongoDb
                 if (el.Value.IsBsonDocument)
                     ParseDocumentElement(el.Value.AsBsonDocument);
 
-                var str = DateTime.TryParse(el.Value.ToString(), out DateTime outDate);
-                if (str)
-                    ((BsonDocument)document).SetElement(i, new BsonElement(el.Name, outDate));
+                //if (el.Name.ToLower() == "tenantid")
+                //    document.SetElement(i, new BsonElement(el.Name, BsonBinaryData.Create(el.Value.ToString())));
+                else
+                {
+                    var str = DateTime.TryParse(el.Value.ToString(), out DateTime outDate);
+                    if (str)
+                        document.SetElement(i, new BsonElement(el.Name, outDate));
+                    else
+                        document.SetElement(i, new BsonElement(el.Name, el.Value));
+                }
                 i++;
             }
             return document;

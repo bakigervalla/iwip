@@ -1,11 +1,17 @@
 ﻿using iwip.Import;
 using iwip.Models;
+using iwip.PO;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Text;
 using System.Threading.Tasks;
 using Alert = iwip.Models.Alert;
 
@@ -14,6 +20,8 @@ namespace iwip.Blazor.Pages.Import
     public partial class Index
     {
         [Inject] IImportAppService ImportAppService { get; set; }
+
+        [Inject] IPOAppService POAppService { get; set; }
 
         private bool isUploading = false;
         private List<Alert> Alerts { get; set; } = new();
@@ -177,7 +185,7 @@ namespace iwip.Blazor.Pages.Import
             dropClass = string.Empty;
         } //HandleDragLeave
 
-        private async Task ImportData()
+        private async Task ImportDataMongo()
         {
             // get files
             try
@@ -198,5 +206,45 @@ namespace iwip.Blazor.Pages.Import
                 Alerts.Add(new Alert(AlertType.danger, ex.Message));
             }
         }
+
+        private async Task ImportData()
+        {
+
+            Alerts.Add(new Alert(AlertType.warning, "Importing data. Please wait..."));
+
+            // get files
+            try
+            {
+                foreach (var file in Files.GroupBy(x => x.FileName))
+                {
+                    var buffer = file.SelectMany(x => x.Data).ToArray();
+
+                    string fileName = Path.GetFileNameWithoutExtension(file.Key);
+
+                    string json = Encoding.ASCII.GetString(buffer);
+
+                    switch (fileName.ToLower())
+                    {
+                        case "iw_po":
+                            var pos = JsonConvert.DeserializeObject<List<PurchaseOrderDto>>(json);
+                            await ImportAppService.ImportPOAsync(pos);
+                            break;
+                        case "iw_shipping":
+                            var shipping = JsonConvert.DeserializeObject<List<ShippingDto>>(json);
+                            await ImportAppService.ImportShippingAsync(shipping);
+                            break;
+                    }
+                }
+
+                Alerts.Clear();
+                Alerts.Add(new Alert(AlertType.success, "Import completed sucessfully."));
+
+            }
+            catch (Exception ex)
+            {
+                Alerts.Add(new Alert(AlertType.danger, ex.Message));
+            }
+        }
+
     }
 }

@@ -13,7 +13,7 @@ using Volo.Abp.MultiTenancy;
 
 namespace iwip.PO
 {
-    [BsonIgnoreExtraElements]
+    /*[BsonIgnoreExtraElements]*/
     public class PurchaseOrder : BasicAggregateRoot<Guid>, IMultiTenant
     {
         public PurchaseOrder()
@@ -21,7 +21,7 @@ namespace iwip.PO
             this.CREATION_DATE = DateTime.Now;
         }
 
-        /*[BsonRepresentation(MongoDB.Bson.BsonType.String)]*/
+        //[BsonRepresentation(MongoDB.Bson.BsonType.Binary)]
         public Guid? TenantId { get; set; }
 
         //public override Guid Id { get; protected set; }
@@ -63,6 +63,7 @@ namespace iwip.PO
         public string POSTAL_CODE { get; set; }
 
         // Collections
+        //[BsonRepresentation(MongoDB.Bson.BsonType.Array)]
         public List<POLine> PO_LINES { get; set; }
 
     }

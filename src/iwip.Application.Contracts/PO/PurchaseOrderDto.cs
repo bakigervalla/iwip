@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Threading;
+using Volo.Abp.MultiTenancy;
 
 namespace iwip.PO
 {
-    public class PurchaseOrderDto
+    public class PurchaseOrderDto : IMultiTenant
     {
         public Guid Id { get; set; }
 

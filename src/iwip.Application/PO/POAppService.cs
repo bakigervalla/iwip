@@ -16,20 +16,16 @@ namespace iwip.PO
     {
         private readonly IRepository<PurchaseOrder, Guid> _poRepository;
         private readonly IRepository<Shipping, Guid> _shippingRepository;
-        private readonly IMongoDbContextProvider<iwipMongoDbContext> _context;
         private readonly IDataFilter _dataFilter;
 
         public POAppService(
              IRepository<PurchaseOrder, Guid> poRepository
             , IRepository<Shipping, Guid> shippingRepository
-            , IMongoDbContextProvider<iwipMongoDbContext> context
-            , IDataFilter dataFilter
-            , IObjectMapper objectMapper)
+            , IDataFilter dataFilter)
         {
             _poRepository = poRepository;
             _shippingRepository = shippingRepository;
             _dataFilter = dataFilter;
-            _context = context;
 
             //GetPolicyName = POPermissions.PO.Default;
             //GetListPolicyName = POPermissions.PO.Default;
@@ -38,11 +34,10 @@ namespace iwip.PO
             //DeletePolicyName = POPermissions.PO.Delete;
         }
 
-        public async Task<PurchaseOrderDto> CreateAsync(CreateUpdatePODto item)
+        public async Task<PurchaseOrderDto> CreateAsync(PurchaseOrderDto item)
         {
-            var poItem = await _poRepository.InsertAsync(
-                          new PurchaseOrder { POSTAL_CODE = item.POSTAL_CODE }
-                      );
+            var result = ObjectMapper.Map<PurchaseOrderDto, PurchaseOrder>(item);
+            var poItem = await _poRepository.InsertAsync(result);
 
             return new PurchaseOrderDto
             {

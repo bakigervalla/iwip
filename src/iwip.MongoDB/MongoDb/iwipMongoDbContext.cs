@@ -2,6 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -35,12 +36,17 @@ public class iwipMongoDbContext : AbpMongoDbContext
     {
         base.CreateModel(modelBuilder);
 
-        //BsonClassMap.RegisterClassMap<PurchaseOrder>(map =>
-        //{
-        //    map.AutoMap();
-        //    map.SetIgnoreExtraElements(true);
-        //    // map.MapProperty(x => x.Id).SetSerializer(new GuidSerializer(BsonType.String));
-        //});
+        BsonClassMap.RegisterClassMap<PurchaseOrder>(map =>
+        {
+            map.AutoMap();
+            //map.SetIgnoreExtraElements(true);
+            //map.MapProperty(x => x.TenantId).SetSerializer(new BsonBinaryDataSerializer());
+        });
+
+        BsonClassMap.RegisterClassMap<Shipping>(map =>
+        {
+            map.AutoMap();
+        });
 
         //modelBuilder.Entity<TodoItems>(b =>
         //{

@@ -10,7 +10,7 @@ namespace iwip.PO
     public interface IPOAppService : IApplicationService
     {
         Task<List<PurchaseOrderDto>> GetListAsync(bool disableTenant);
-        Task<PurchaseOrderDto> CreateAsync(CreateUpdatePODto createPO);
+        Task<PurchaseOrderDto> CreateAsync(PurchaseOrderDto item);
         Task<PurchaseOrderDto> UpdateAsync(PurchaseOrderDto updatePO);
         Task DeleteAsync(Guid id);
 
